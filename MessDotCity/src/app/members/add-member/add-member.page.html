@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar  color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/members/messname"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add member</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [disabled]="!memberForm.valid" (click)="addMember()">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="row h-80p">
+    <div class="col align-self-center">
+      <ion-list [formGroup]="memberForm">
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">First Name (Max 10 char)</ion-label>
+          <ion-input type="text" autocomplete="off" formControlName="firstName"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Last Name (Max 12 char)</ion-label>
+          <ion-input type="text" autocomplete="off" formControlName="lastName"
+          [ngClass]="{
+            'ng-invalid':
+            memberForm.get('lastName').touched &&
+              memberForm.hasError('whiteSpaceName')
+          }"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Breakfast</ion-label>
+          <ion-input type="number" formControlName="dBreakfast"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Lunch</ion-label>
+          <ion-input type="number" formControlName="dLunch"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Dinner</ion-label>
+          <ion-input type="number" formControlName="dDinner"></ion-input>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>
+

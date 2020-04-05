@@ -1,0 +1,7 @@
+{
+  "name": "MessDotCity",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

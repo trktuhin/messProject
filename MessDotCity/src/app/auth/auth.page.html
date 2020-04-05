@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="m1"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{mode}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="row h-80p">
+    <div class="col align-self-center">
+      <!-- Login form -->
+      <ion-list *ngIf="isLoginMode()" [formGroup]="loginForm">
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Mobile</ion-label>
+          <ion-input type="text" 
+          [ngClass]="{
+            'ng-invalid':
+            loginForm.get('mobile').touched &&
+            loginForm.hasError('isInvalidBd')
+          }"
+          formControlName="mobile"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Password (6-12 characters)</ion-label>
+          <ion-input type="password" formControlName="password"></ion-input>
+        </ion-item>
+        <ion-button color="dark" expand="block" class="w-300px mx-auto" 
+        [disabled]="!loginForm.valid"
+        (click)="login()">Sign In</ion-button>
+      </ion-list>
+
+      <!-- Registration form -->
+      <ion-list *ngIf="!isLoginMode()" [formGroup]="registerForm">
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">First Name (Max 10 characters)</ion-label>
+          <ion-input type="text" autocomplete="off" formControlName="firstName"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Last Name (Max 10 characters)</ion-label>
+          <ion-input type="text" autocomplete="off" formControlName="lastName"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Mobile</ion-label>
+          <ion-input type="text" autocomplete="off" 
+          [ngClass]="{
+            'ng-invalid':
+              registerForm.get('mobile').touched &&
+              registerForm.hasError('isInvalidBd')
+          }"
+          formControlName="mobile"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Password (6-12 characters)</ion-label>
+          <ion-input type="password" 
+          formControlName="password"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Confirm Password</ion-label>
+          <ion-input type="password" 
+          [ngClass]="{
+            'ng-invalid':
+              registerForm.get('confirmPassword').touched &&
+              registerForm.hasError('mismatch')
+          }"
+          formControlName="confirmPassword"></ion-input>
+        </ion-item>
+        <ion-button color="dark" expand="block" class="w-300px mx-auto" (click)="register()"
+        [disabled]="!registerForm.valid">Sign Up
+        </ion-button>
+      </ion-list>
+
+      <!-- switching mode -->
+      <ion-button color="danger" expand="block" fill="clear" type="button" class="w-300px mx-auto mt-5"
+        (click)="switchMode()">Switch
+        to {{isLoginMode()===true?"Sign Up":"Sign In"}}
+      </ion-button>
+
+    </div>
+  </div>
+</ion-content>

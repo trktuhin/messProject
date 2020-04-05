@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <!-- <ion-menu-button menu="m1"></ion-menu-button> -->
+      <ion-back-button defaultHref="/auth"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Submit OTP</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="row h-80p">
+    <div class="col align-self-center">
+      <ion-item class="form-group w-300px mx-auto">
+        <ion-label position="floating" color="medium">Enter your OTP</ion-label>
+        <ion-input type="text"></ion-input>
+      </ion-item>
+      <ion-button color="dark" expand="block" class="w-300px mx-auto">Submit</ion-button>
+      <p class="text-muted w-300px mx-auto">We sent your otp to *********91</p>
+      <ion-button color="danger" expand="block" fill="clear" class="w-300px mx-auto mt-5">
+        Resend Otp
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

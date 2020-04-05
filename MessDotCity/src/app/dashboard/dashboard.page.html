@@ -1,0 +1,107 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="m1"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{messname|titlecase}} / Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-segment value="summary" (ionChange)="onFilterUpdate($event)">
+          <ion-segment-button value="summary">
+            <ion-label>Summary</ion-label>
+          </ion-segment-button>
+
+          <ion-segment-button value="meals">
+            <ion-label>Meals for Today</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <!-- summary segment -->
+  <ion-grid *ngIf="selectedSegment==='summary'">
+    <ion-row>
+      <ion-col size="6" size-md="4" offset-md="1">
+        <ion-select placeholder="Select One" value="January2020">
+          <ion-select-option value="January2020">January 2020</ion-select-option>
+          <ion-select-option value="February2020">February 2020</ion-select-option>
+        </ion-select>
+      </ion-col>
+      <ion-col size="6" class="text-right text-tertiary pr-2">
+        <ion-label>Meal Rate: 56.46</ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item *ngFor="let md of membersSummary">
+            <ion-grid>
+              <ion-row>
+                <ion-col size-sm="3" size-md="2">
+                  <ion-avatar class="mx-auto">
+                    <ion-img width="80" height="80"
+                      src="{{md.photoUrl}}">
+                    </ion-img>
+                  </ion-avatar>
+                </ion-col>
+                <ion-col size-sm="6" size-md="8">
+                  <ion-label>{{md.firstName}}</ion-label>
+                  <p class="small text-muted">{{md.deposit}} - ({{mealRate}} * {{md.totalMeal}}+{{otherExpense}})</p>
+                </ion-col>
+                <ion-col size-sm="3" size-md="2">
+                  <ion-label [ngClass]="md.deposit-(mealRate*md.totalMeal+otherExpense) > 0 ?'text-primary' : 'text-danger'">
+                    ৳ {{md.deposit-(mealRate*md.totalMeal+otherExpense)| number:'.0-2'}}</ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <!-- meals segment -->
+  <ion-grid *ngIf="selectedSegment!=='summary'">
+    <ion-row>
+      <ion-col size="12">
+        <p class="small text-center">Breakfast: {{totalBfCount()}} Lunch: {{totalLchCount()}} Dinner: {{totalDnrCount()}}</p>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-list>
+          <ion-item *ngFor="let member of membersForMeals">
+            <ion-grid>
+              <ion-row>
+                <ion-col size-sm="3" size-md="2">
+                  <ion-avatar class="mx-auto">
+                    <ion-img width="80" height="80" src="{{member.photoUrl}}">
+                    </ion-img>
+                  </ion-avatar>
+                </ion-col>
+                <ion-col size-sm="6" size-md="8">
+                  <ion-label>{{member.firstName}}</ion-label>
+                  <p class="small text-muted">({{member.dBreakfast}} + {{member.dLunch}} + {{member.dDinner}})</p>
+                </ion-col>
+                <ion-col size-sm="3" size-md="2">
+                  <ion-label class="text-primary">
+                    <ion-icon slot="start" name="restaurant-outline"></ion-icon>
+                    {{member.dBreakfast+member.dLunch+member.dDinner}}
+                  </ion-label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

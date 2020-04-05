@@ -1,0 +1,19 @@
+.w-300px {
+    width: 18rem !important;
+}
+
+.h-80p {
+    min-height: 80% !important;
+}
+
+input.mobile-bd:before {
+    content: "+880";
+}
+
+ion-toolbar ion-title {
+    color: #fff;
+}
+
+.sm-2 {
+    font-size: smaller !important;
+}

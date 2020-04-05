@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="m1"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Edit Profile</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button [disabled]="!profileForm.valid" (click)="onSubmitForm()">
+        <ion-icon name="checkmark" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  
+  <ion-grid>
+    <ion-row>
+      <ion-col size-sm="6" offset-sm="3">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-subtitle>Profile of</ion-card-subtitle>
+            <ion-card-title>{{profileForm.get('firstName').value}}</ion-card-title>
+          </ion-card-header>
+        
+          <ion-card-content >
+            <div class="overlay-container">
+            <ion-img [src]="selectedImageUrl">
+            </ion-img>
+            <div class="bottom-right button" (click)="onPickImage()" title="Change photo">
+              <ion-label color="light">
+                <ion-icon name="camera" slot="start" size="large"></ion-icon>
+              </ion-label>
+            </div>
+            <input accept="image/jpeg" type="file" *ngIf="usePicker" (change)="onFileChosen($event)" #filePicker>
+          </div>
+          <div [formGroup]="profileForm">
+            <ion-item class="form-group">
+              <ion-label position="floating" color="medium">First Name (Max 10 characters)</ion-label>
+              <ion-input type="text" autocomplete="off" formControlName="firstName"></ion-input>
+            </ion-item>
+            <ion-item class="form-group">
+              <ion-label position="floating" color="medium">Last Name (Max 10 characters)</ion-label>
+              <ion-input type="text" autocomplete="off" formControlName="lastName"></ion-input>
+            </ion-item>
+            <ion-item class="form-group">
+              <ion-label position="floating" color="medium">Email</ion-label>
+              <ion-input type="email" autocomplete="off" formControlName="emailAddress"></ion-input>
+            </ion-item>
+          </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

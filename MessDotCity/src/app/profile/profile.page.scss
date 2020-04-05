@@ -1,0 +1,22 @@
+.overlay-container {
+    position: relative;
+}
+
+.bottom-right {
+  position: absolute;
+  bottom: 8px;
+  right: 16px;
+  padding: 2px 6px;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.overlay-container:hover {
+    .bottom-right {
+        background-color: rgba(0,0,0,0.8);
+        cursor: pointer;
+    }
+}
+
+input[type='file'] {
+    display: none;
+}

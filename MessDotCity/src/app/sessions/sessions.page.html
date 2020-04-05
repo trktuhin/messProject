@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-menu-button menu="m1"></ion-menu-button>
+    </ion-buttons>
+    <ion-title>{{messname|titlecase}} / Sessions</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngFor="let sn of sessions" align-items-center>
+      <ion-col size="8" offset-md="1">
+        <ion-label>{{sn.sessionName}}</ion-label>
+        <p class="text-muted">
+          <ion-icon slot="start" name="calendar"></ion-icon> {{sn.sessionStart| date:'mediumDate'}} -
+          <ion-icon slot="start" name="calendar"></ion-icon> {{sn.sessionEnd| date:'mediumDate'}}</p>
+      </ion-col>
+      <ion-col size="2" size-md="1">
+        <ion-button color="warning" title="edit">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col size="2" size-md="1" title="delete">
+        <ion-button color="danger">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,55 @@
+<ion-app>
+  <ion-split-pane contentId="main-content">
+    <ion-menu contentId="main-content" menuId="m1" type="overlay">
+      <ion-content>
+        <ion-list id="inbox-list" *ngIf="authService.IsLoggedIn">
+          <ion-list-header>MESS<span class="dot-mark"></span>CITY
+          </ion-list-header>
+          <ion-note class="mb-0 pb-0 px-auto">
+            
+          </ion-note>
+          <ion-item-divider>
+            <ion-label>
+              {{memberMessName}}
+            </ion-label>
+          </ion-item-divider>
+          <ion-menu-toggle auto-hide="false" *ngFor="let mn of memberNav">
+            <ion-item lines="none" routerDirection="root" routerLinkActive="selected" [routerLink]="[mn.url]">
+              <ion-icon slot="start" color="dark" [ios]="mn.icon + '-outline'" [md]="mn.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ mn.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-item-divider>
+          </ion-item-divider>
+          <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
+            <ion-item [routerLink]="[p.url]" lines="none" [class.active-menu]="activePath === p.url"
+              routerLinkActive="selected">
+              <ion-icon slot="start" color="dark" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ p.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
+          <ion-menu-toggle auto-hide="false">
+            <ion-item lines="none" (click)="logout()" detail="false" button>
+              <ion-icon color="dark" slot="start" ios="log-out" md="log-out-sharp"></ion-icon>
+              <ion-label>Sign out</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+
+        <ion-list *ngIf="!authService.IsLoggedIn">
+          <ion-list-header>Mess<span class="text-danger font-weight-bold">Dot</span>City</ion-list-header>
+          <ion-note>Hi Dear</ion-note>
+          <ion-menu-toggle auto-hide="false" *ngFor="let ap of anonymousPage">
+            <ion-item lines="none" routerDirection="root" routerLinkActive="selected" [routerLink]="[ap.url]">
+              <ion-icon slot="start" color="dark" [ios]="ap.icon + '-outline'" [md]="ap.icon + '-sharp'"></ion-icon>
+              <ion-label>{{ ap.title }}</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+        </ion-list>
+      </ion-content>
+    </ion-menu>
+    <ion-router-outlet id="main-content"></ion-router-outlet>
+  </ion-split-pane>
+</ion-app>
