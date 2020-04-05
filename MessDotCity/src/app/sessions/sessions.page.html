@@ -3,9 +3,11 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{messname|titlecase}} / Sessions</ion-title>
+    <ion-title>
+      <ion-label><ion-icon slot="start" name="calendar"></ion-icon></ion-label>
+       {{messname|titlecase}}</ion-title>
     <ion-buttons slot="primary">
-      <ion-button>
+      <ion-button [routerLink]="'add-session'">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -22,12 +24,12 @@
           <ion-icon slot="start" name="calendar"></ion-icon> {{sn.sessionEnd| date:'mediumDate'}}</p>
       </ion-col>
       <ion-col size="2" size-md="1">
-        <ion-button color="warning" title="edit">
+        <ion-button [routerLink]="['edit-session',sn.sessionId]" color="warning" title="edit">
           <ion-icon slot="icon-only" name="create"></ion-icon>
         </ion-button>
       </ion-col>
       <ion-col size="2" size-md="1" title="delete">
-        <ion-button color="danger">
+        <ion-button (click)="onDeleteSession(sn.sessionId)" color="danger">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-col>

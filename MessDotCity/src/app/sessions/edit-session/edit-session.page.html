@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Session</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="row h-80p">
+    <div class="col align-self-center">
+      <ion-list [formGroup]="sessionForm">
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium">Session Name (Max 15 chars)</ion-label>
+          <ion-input type="text" autocomplete="off" formControlName="sessionName"></ion-input>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Session Start</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" formControlName="sessionStart"></ion-datetime>
+        </ion-item>
+        <ion-item class="form-group w-300px mx-auto">
+          <ion-label position="floating" color="medium" >Session End</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" formControlName="sessionEnd"></ion-datetime>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>

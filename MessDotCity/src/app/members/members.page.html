@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
-    <ion-title>{{messname|titlecase}} / Members</ion-title>
+    <ion-title><ion-label><ion-icon slot="start" name="people"></ion-icon></ion-label>
+       {{messname|titlecase}}</ion-title>
     <ion-buttons slot="primary">
       <ion-button routerLink="/members/messname/add-member">
         <ion-icon name="add" slot="icon-only"></ion-icon>

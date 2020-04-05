@@ -38,7 +38,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Sessions',
-      url: '/sessions/demomess',
+      url: '/sessions/messname',
       icon: 'calendar'
     },
     {
