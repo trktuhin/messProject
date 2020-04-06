@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: DepositsPage
+  },
+  {
+    path: 'deposit-history/:memberId',
+    loadChildren: () => import('./deposit-history/deposit-history.module').then( m => m.DepositHistoryPageModule)
   }
 ];
 

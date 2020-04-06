@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SessionInfo } from 'src/app/_models/sessionInfo';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Vibration } from '@ionic-native/vibration/ngx';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-session',
@@ -10,7 +12,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class EditSessionPage implements OnInit {
   selectedSession: SessionInfo;
   sessionForm: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private vibration: Vibration, private platform: Platform) { }
 
   ngOnInit() {
     this.selectedSession = {
@@ -30,4 +32,9 @@ export class EditSessionPage implements OnInit {
     });
   }
 
+  doVibrate() {
+    if(this.platform.is('android')) {
+      this.vibration.vibrate(1000);
+    }
+  }
 }
