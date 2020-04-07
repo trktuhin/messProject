@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, Platform } from '@ionic/angular';
 import { AddWithdrawComponent } from './add-withdraw/add-withdraw.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-deposits',
@@ -30,13 +31,27 @@ export class DepositsPage implements OnInit {
     }
   ];
   messname = '';
-  constructor(private route: ActivatedRoute, private modalCtrl: ModalController) { }
+  backButtonSubscription: Subscription;
+  constructor(private route: ActivatedRoute, private modalCtrl: ModalController, 
+              private platform: Platform) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.messname = params.get('messname');
     });
   }
+
+  ionViewWillEnter() {
+    // console.log('from will enter');
+    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
+      navigator['app'].exitApp();
+    });
+   }
+
+   ionViewDidLeave() {
+    this.backButtonSubscription.unsubscribe();
+   }
+
 
   getTotalBalance() {
     let sum = 0;

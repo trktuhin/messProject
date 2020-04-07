@@ -50,6 +50,10 @@ const routes: Routes = [
   {
     path: 'notices/:messname',
     loadChildren: () => import('./notices/notices.module').then( m => m.NoticesPageModule)
+  },
+  {
+    path: 'daily-expenses/:messname',
+    loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule)
   }
 ];
 

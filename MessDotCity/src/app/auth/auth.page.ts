@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth',
@@ -12,13 +14,26 @@ export class AuthPage implements OnInit {
   mode = 'Sign In';
   registerForm: FormGroup;
   loginForm: FormGroup;
-
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  backButtonSubscription: Subscription;
+  constructor(private fb: FormBuilder, private authService: AuthService, 
+              private router: Router,
+              private platform: Platform) { }
 
   ngOnInit() {
     this.createLoginForm();
     this.createRegisterForm();
   }
+  ionViewWillEnter() {
+    // console.log('from will enter');
+    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
+      navigator['app'].exitApp();
+    });
+   }
+
+   ionViewDidLeave() {
+    this.backButtonSubscription.unsubscribe();
+   }
+
 
   // Initializing the forms
   createLoginForm() {

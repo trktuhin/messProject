@@ -17,3 +17,7 @@ ion-toolbar ion-title {
 .sm-2 {
     font-size: smaller !important;
 }
+
+.full-width-select{
+    max-width: 100% !important;
+  }

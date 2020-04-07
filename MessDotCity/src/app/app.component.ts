@@ -28,7 +28,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Daily Expenses',
-      url: '/expenses/messname',
+      url: '/daily-expenses/messname',
       icon: 'receipt'
     },
     {

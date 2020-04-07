@@ -3,6 +3,8 @@ import { SegmentChangeEventDetail } from '@ionic/core';
 import { MemberInfo } from '../_models/memberInfo';
 import { MemberForSummary } from '../_models/memberForSummary';
 import { ActivatedRoute } from '@angular/router';
+import { Platform } from '@ionic/angular';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -78,14 +80,25 @@ export class DashboardPage implements OnInit {
       userId: 1
     }
   ];
-
-  constructor(private route: ActivatedRoute) { }
+  backButtonSubscription: Subscription;
+  constructor(private route: ActivatedRoute, private platform: Platform) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.messname = params.get('messname');
-    })
+    });
   }
+
+  ionViewWillEnter() {
+    // console.log('from will enter');
+    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
+      navigator['app'].exitApp();
+    });
+   }
+
+   ionViewDidLeave() {
+    this.backButtonSubscription.unsubscribe();
+   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
     this.selectedSegment = event.detail.value;

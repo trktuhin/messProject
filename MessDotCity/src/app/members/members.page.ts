@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { SegmentChangeEventDetail } from '@ionic/core';
-import { ModalController, ToastController, AlertController } from '@ionic/angular';
+import { ModalController, ToastController, AlertController, Platform } from '@ionic/angular';
 import { ReplaceMemberComponent } from './replace-member/replace-member.component';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-members',
@@ -71,17 +72,29 @@ export class MembersPage implements OnInit {
       mobile: '01677048893'
     }
   ];
+  backButtonSubscription: Subscription;
   constructor(private modalCtrl: ModalController,
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private router: Router,
-              private route: ActivatedRoute) { }
+              private route: ActivatedRoute,
+              private platform: Platform) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
       this.messname = params.get('messname');
     });
   }
+  ionViewWillEnter() {
+    // console.log('from will enter');
+    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
+      navigator['app'].exitApp();
+    });
+   }
+
+   ionViewDidLeave() {
+    this.backButtonSubscription.unsubscribe();
+   }
 
   viewMeals(memberId: number) {
     this.router.navigate(['/members/messname/2/view-meals']);
