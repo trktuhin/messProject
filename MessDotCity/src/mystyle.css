@@ -1,3 +1,5 @@
+
+
 .w-300px {
     width: 18rem !important;
 }
@@ -21,3 +23,9 @@ ion-toolbar ion-title {
 .full-width-select{
     max-width: 100% !important;
   }
+
+@media (max-width: 768px) {
+    .hide-sm{
+        display: none !important;
+    }
+}

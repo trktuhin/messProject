@@ -1,0 +1,45 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Add Fixed Expense</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button>
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size-md="6" offset-md="3">
+        <ion-list [formGroup]="expenseForm">
+          <ion-item>
+            <ion-label position="floating" color="medium">Title</ion-label>
+            <ion-input type="text" autocomplete="off" formControlName="expenseName"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating" color="medium">Amount</ion-label>
+            <ion-input type="number" autocomplete="off" formControlName="expenseAmount"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating" color="medium">Date</ion-label>
+            <ion-datetime displayFormat="MMM-DD-YYYY" formControlName="expenseDate"></ion-datetime>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating" color="medium">Remarks</ion-label>
+            <ion-input type="text" autocomplete="off" formControlName="remarks"></ion-input>
+          </ion-item>
+        </ion-list>
+        <div class="text-center">
+          <ion-button>
+            Submit
+          </ion-button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

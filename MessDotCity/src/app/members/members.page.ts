@@ -49,8 +49,7 @@ export class MembersPage implements OnInit {
       requestId: 1,
       firstName: 'John',
       lastName: 'Abraham',
-      // tslint:disable-next-line: max-line-length
-      photoUrl: 'https://akm-img-a-in.tosshub.com/indiatoday/images/story/201908/john_abraham-770x433.png?Zd.2_tiXqqdp3mK4SEh6tQBL.w7lUXU2',
+      photoUrl: 'https://images-na.ssl-images-amazon.com/images/I/71YqPv%2BaG7L._SL1500_.jpg',
       userId: 1,
       mobile: '01677048891'
     },
@@ -58,7 +57,7 @@ export class MembersPage implements OnInit {
       requestId: 2,
       firstName: 'John',
       lastName: 'Cuttler',
-      photoUrl: 'https://miro.medium.com/max/3150/1*HP7zJEnq-tuDbekIvZvoJQ@2x.jpeg',
+      photoUrl: 'https://www.facemama.com/wp-content/uploads/2012/10/boy-con-lentes-514x342.jpg',
       userId: 1,
       mobile: '01677048892'
     },
@@ -66,8 +65,7 @@ export class MembersPage implements OnInit {
       requestId: 3,
       firstName: 'John',
       lastName: 'Wick',
-      // tslint:disable-next-line: max-line-length
-      photoUrl: 'https://artist.api.lv3.cdn.hbo.com/images/GXcWrtQ7UXyRMwgEAAACC/tilezoom?v=79b8797a4cc663ed6af378cb1e56675c&size=1500x844&fmt=jpg',
+      photoUrl: 'https://i.pinimg.com/originals/0d/0f/08/0d0f0898e1deb1ffce7ad53db8ba4e99.jpg',
       userId: 1,
       mobile: '01677048893'
     }

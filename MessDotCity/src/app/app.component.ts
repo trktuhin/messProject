@@ -33,7 +33,7 @@ export class AppComponent implements OnInit {
     },
     {
       title: 'Fixed Expenses',
-      url: '/fixedexpenses/messname',
+      url: '/fixed-expenses/messname',
       icon: 'reader'
     },
     {

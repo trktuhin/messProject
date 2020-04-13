@@ -54,6 +54,10 @@ const routes: Routes = [
   {
     path: 'daily-expenses/:messname',
     loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule)
+  },
+  {
+    path: 'fixed-expenses/:messname',
+    loadChildren: () => import('./fixed-expenses/fixed-expenses.module').then( m => m.FixedExpensesPageModule)
   }
 ];
 

@@ -11,6 +11,10 @@ const routes: Routes = [
   {
     path: 'add-daily-expense',
     loadChildren: () => import('./add-daily-expense/add-daily-expense.module').then( m => m.AddDailyExpensePageModule)
+  },
+  {
+    path: 'edit-meals/:date',
+    loadChildren: () => import('./edit-meals/edit-meals.module').then( m => m.EditMealsPageModule)
   }
 ];
 
