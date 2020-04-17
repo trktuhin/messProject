@@ -13,5 +13,8 @@ namespace MessDotCity.API.Models
         public string UserId { get; set; }
         public bool IsMobileVerified { get; set; }
         public bool IsEmailVerified { get; set; }
+        public string PhotoUrl { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] PasswordSalt { get; set; }
     }
 }
