@@ -14,8 +14,7 @@ export class AuthPage implements OnInit {
   mode = 'Sign In';
   registerForm: FormGroup;
   loginForm: FormGroup;
-  backButtonSubscription: Subscription;
-  constructor(private fb: FormBuilder, private authService: AuthService, 
+  constructor(private fb: FormBuilder, private authService: AuthService,
               private router: Router,
               private platform: Platform) { }
 
@@ -24,16 +23,7 @@ export class AuthPage implements OnInit {
     this.createRegisterForm();
   }
   ionViewWillEnter() {
-    // console.log('from will enter');
-    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
-      navigator['app'].exitApp();
-    });
    }
-
-   ionViewDidLeave() {
-    this.backButtonSubscription.unsubscribe();
-   }
-
 
   // Initializing the forms
   createLoginForm() {
@@ -84,13 +74,31 @@ export class AuthPage implements OnInit {
 
   login() {
     // console.log(this.loginForm);
-    this.authService.login();
-    this.router.navigateByUrl('/dashboard');
-
+    const model = {
+      mobile: this.loginForm.get('mobile').value,
+      password: this.loginForm.get('password').value
+    };
+    this.authService.login(model).subscribe(next => {
+      console.log('logged in successfully');
+      this.router.navigateByUrl('/dashboard/messname');
+    }, err => console.log(err));
   }
 
   register() {
-    console.log(this.registerForm);
+    const model = {
+      firstName: this.registerForm.get('firstName').value,
+      lastName: this.registerForm.get('lastName').value,
+      mobile: this.registerForm.get('mobile').value,
+      password: this.registerForm.get('password').value
+    }
+    this.authService.register(model).subscribe(res => {
+      console.log('Registration successful');
+    }, err => console.log(err),
+    () => {
+      this.authService.login(model).subscribe(() => {
+        this.router.navigateByUrl('/dashboard/messname');
+      });
+    });
   }
 
 }

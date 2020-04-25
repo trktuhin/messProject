@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MessDotCity.API.Data;
 using MessDotCity.API.Dtos;
 using MessDotCity.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -14,6 +15,7 @@ namespace MessDotCity.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repo;
@@ -33,7 +35,7 @@ namespace MessDotCity.API.Controllers
             userToCreate.FirstName = dto.FirstName;
             userToCreate.LastName = dto.LastName;
             userToCreate.Mobile = dto.Mobile;
-            userToCreate.UserId = new Guid().ToString();
+            userToCreate.UserId = Guid.NewGuid().ToString();
             var createdUser = await _repo.Register(userToCreate, dto.Password);
             return StatusCode(201);
         }

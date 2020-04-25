@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Platform } from '@ionic/angular';
+import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './_services/auth.service';
@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
-  memberMessName = 'Your Mess name';
+  selectedImageUrl = 'http://localhost:5000/images/robin.jpg';
 
   public memberNav = [
     {
@@ -95,7 +95,8 @@ export class AppComponent implements OnInit {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private menuCtrl: MenuController
   ) {
     this.initializeApp();
     // this.router.events.subscribe((event: RouterEvent) => {
@@ -121,5 +122,15 @@ export class AppComponent implements OnInit {
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/auth');
+  }
+  getMessname() {
+    return localStorage.getItem('messName');
+  }
+  getUsername() {
+    return localStorage.getItem('username');
+  }
+  gotoProfile() {
+    this.router.navigate(['profile']);
+    this.menuCtrl.close('m1');
   }
 }

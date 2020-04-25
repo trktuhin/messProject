@@ -55,6 +55,7 @@ namespace MessDotCity.API
             app.UseAuthentication();
             // app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseStaticFiles();
         }
     }
 }

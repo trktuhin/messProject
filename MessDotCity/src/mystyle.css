@@ -23,7 +23,16 @@ ion-toolbar ion-title {
 .full-width-select{
     max-width: 100% !important;
   }
-
+.flexbox-items-center{
+    display: flex;
+    height: 100px;
+    align-items: center;
+    cursor: pointer;
+}
+.flexbox-items-center div{
+    text-align: center;
+    line-height: 75px;
+}
 @media (max-width: 768px) {
     .hide-sm{
         display: none !important;

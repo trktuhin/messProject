@@ -5,12 +5,19 @@
         <ion-list id="inbox-list" *ngIf="authService.IsLoggedIn">
           <ion-list-header>MESS<span class="dot-mark"></span>CITY
           </ion-list-header>
-          <ion-note class="mb-0 pb-0 px-auto">
-            
+          <ion-note *ngIf="authService.IsLoggedIn" class="mb-0 pb-0 px-auto">
+            <div class="flexbox-items-center" (click)="gotoProfile()">
+              <div>
+                <ion-avatar><ion-img [src]="selectedImageUrl"></ion-img></ion-avatar>
+              </div>
+              <div>
+                <ion-text class="pl-2">{{getUsername()}}</ion-text>
+              </div>
+            </div>
           </ion-note>
           <ion-item-divider>
             <ion-label>
-              {{memberMessName}}
+              {{getMessname()}}
             </ion-label>
           </ion-item-divider>
           <ion-menu-toggle auto-hide="false" *ngFor="let mn of memberNav">
@@ -39,8 +46,7 @@
         </ion-list>
 
         <ion-list *ngIf="!authService.IsLoggedIn">
-          <ion-list-header>Mess<span class="text-danger font-weight-bold">Dot</span>City</ion-list-header>
-          <ion-note>Hi Dear</ion-note>
+          <ion-list-header>MESS<span class="dot-mark"></span>CITY</ion-list-header>
           <ion-menu-toggle auto-hide="false" *ngFor="let ap of anonymousPage">
             <ion-item lines="none" routerDirection="root" routerLinkActive="selected" [routerLink]="[ap.url]">
               <ion-icon slot="start" color="dark" [ios]="ap.icon + '-outline'" [md]="ap.icon + '-sharp'"></ion-icon>
