@@ -13,7 +13,7 @@ namespace MessDotCity.API.Controllers
     {
         // GET api/values
         [HttpGet]
-        [Authorize]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<string>> Get()
         {
             return new string[] { "value1", "value2" };

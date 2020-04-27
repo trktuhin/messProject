@@ -65,11 +65,6 @@ export class AppComponent implements OnInit {
       icon: 'grid'
     },
     {
-      title: 'Profile',
-      url: '/profile',
-      icon: 'person-circle'
-    },
-    {
       title: 'Visit Anonymously',
       url: '/visit',
       icon: 'skull'

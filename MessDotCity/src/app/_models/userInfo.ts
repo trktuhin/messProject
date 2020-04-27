@@ -1,10 +1,11 @@
 export interface UserInfo {
-    userId: number;
+    userId?: number;
     firstName: string;
     lastName: string;
     mobile: string;
-    messId: number;
-    messRole: string;
+    messId?: number;
+    messRole?: string;
     email: string;
     photoUrl: string;
+    profession?: string;
 }

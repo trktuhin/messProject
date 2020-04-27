@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using AutoMapper;
 using MessDotCity.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -26,7 +27,9 @@ namespace MessDotCity.API
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
+            services.AddAutoMapper();
             services.AddScoped<IAuthRepository,AuthRepository>();
+            services.AddScoped<IProfileRepository,ProfileRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters

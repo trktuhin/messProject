@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Plugins, Capacitor, CameraSource, CameraResultType, CameraPhoto } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ProfileService } from '../_services/profile.service';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -35,12 +36,23 @@ export class ProfilePage implements OnInit {
   imgFile: Blob;
   usePicker = false;
   profileForm: FormGroup;
-  constructor(private platform: Platform, private fb: FormBuilder) { }
+  constructor(private platform: Platform, private fb: FormBuilder, private profleService: ProfileService) { }
   ngOnInit() {
     if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
     }
     this.createProfileForm();
+  }
+
+  ionViewWillEnter() {
+    this.profleService.getProfileInfo().subscribe(res => {
+      // console.log(res);
+      this.profileForm.patchValue({
+        firstName: res.firstName,
+        lastName: res.lastName,
+        emailAddress: res.email
+      });
+    });
   }
 
   createProfileForm() {
@@ -80,7 +92,7 @@ export class ProfilePage implements OnInit {
         }
       });
     }).catch(err => {
-      if(this.usePicker) {
+      if (this.usePicker) {
         this.filePickerRef.nativeElement.click();
       }
       console.log(err);
