@@ -45,12 +45,18 @@ namespace MessDotCity.API.Controllers
         {
             var userFromRepo = await _repo.Login(dto.Mobile, dto.Password);
             if (userFromRepo == null) return Unauthorized();
+            string photoUrl = "";
+            if(userFromRepo.PhotoUrl != null)
+            {
+                photoUrl = userFromRepo.PhotoUrl;
+            }
 
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserId),
                 new Claim(ClaimTypes.Name, userFromRepo.FirstName+" "+userFromRepo.LastName),
-                new Claim("Messname", "Your messname")
+                new Claim("Messname", "Your messname"),
+                new Claim("ImageUrl", photoUrl)
             };
             var key = new SymmetricSecurityKey
                 (Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));

@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Helpers;
+using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
@@ -32,6 +33,7 @@ namespace MessDotCity.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
             services.AddAutoMapper();
+            services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IProfileRepository,ProfileRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();

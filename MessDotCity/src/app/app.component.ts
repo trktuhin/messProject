@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
-  selectedImageUrl = 'http://localhost:5000/images/robin.jpg';
+  // selectedImageUrl = 'http://localhost:5000/images/robin.jpg';
 
   public memberNav = [
     {

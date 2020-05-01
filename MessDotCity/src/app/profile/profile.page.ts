@@ -32,7 +32,7 @@ function base64toBlob(base64Data, contentType) {
 })
 export class ProfilePage implements OnInit {
   @ViewChild('filePicker', null) filePickerRef: ElementRef<HTMLInputElement>;
-  selectedImageUrl = 'https://img.icons8.com/material/4ac144/256/user-male.png';
+  selectedImageUrl = '';
   imgFile: Blob;
   usePicker = false;
   profileForm: FormGroup;
@@ -53,7 +53,10 @@ export class ProfilePage implements OnInit {
         emailAddress: res.email
       });
       if (res.photoUrl) {
-        this.selectedImageUrl = res.photoUrl;
+        this.selectedImageUrl = 'http://localhost:5000/images/' + res.photoUrl;
+      }
+      else{
+        this.selectedImageUrl = 'http://localhost:5000/images/user.jpg';
       }
     });
   }

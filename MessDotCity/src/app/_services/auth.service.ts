@@ -36,6 +36,20 @@ export class AuthService {
     );
   }
 
+  getProfilePicture() {
+    const loggedIn = this.IsLoggedIn;
+    if (loggedIn) {
+      const token = localStorage.getItem('token');
+      const decodedToken = this.jwtHelper.decodeToken(token);
+      if (!!decodedToken.ImageUrl) {
+        return 'http://localhost:5000/images/' + decodedToken.ImageUrl;
+      }
+      else {
+        return 'http://localhost:5000/images/user.jpg';
+      }
+    }
+  }
+
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('messName');
