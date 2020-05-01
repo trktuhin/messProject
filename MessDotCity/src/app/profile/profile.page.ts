@@ -32,7 +32,7 @@ function base64toBlob(base64Data, contentType) {
 })
 export class ProfilePage implements OnInit {
   @ViewChild('filePicker', null) filePickerRef: ElementRef<HTMLInputElement>;
-  selectedImageUrl = 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80';
+  selectedImageUrl = 'https://img.icons8.com/material/4ac144/256/user-male.png';
   imgFile: Blob;
   usePicker = false;
   profileForm: FormGroup;
@@ -52,6 +52,9 @@ export class ProfilePage implements OnInit {
         lastName: res.lastName,
         emailAddress: res.email
       });
+      if (res.photoUrl) {
+        this.selectedImageUrl = res.photoUrl;
+      }
     });
   }
 
@@ -115,6 +118,14 @@ export class ProfilePage implements OnInit {
   }
 
   onSubmitForm() {
-    console.log(this.profileForm);
+    let model = new FormData();
+    model.append('firstName', this.profileForm.get('firstName').value);
+    model.append('lastName', this.profileForm.get('lastName').value);
+    model.append('email', this.profileForm.get('emailAddress').value);
+    model.append('image', this.profileForm.get('image').value);
+
+    this.profleService.editProfileInfo(model).subscribe(res => {
+      console.log(res);
+    }, err => console.log(err));
   }
 }

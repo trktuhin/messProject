@@ -1,5 +1,6 @@
 using AutoMapper;
 using MessDotCity.API.Data.Resource;
+using MessDotCity.API.Dtos;
 using MessDotCity.API.Models;
 
 namespace MessDotCity.API.Helpers
@@ -10,6 +11,7 @@ namespace MessDotCity.API.Helpers
         {   
             CreateMap<UserInfo, UserProfileResource>();
             CreateMap<UserProfileResource, UserInfo>();
+            CreateMap<ProfileSubmitDto, UserInfo>();
         }
     }
 }

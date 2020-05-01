@@ -8,12 +8,16 @@ import { UserInfo } from '../_models/userInfo';
   providedIn: 'root'
 })
 export class ProfileService {
-  baseUrl = environment.apiUrl + 'profile';
+  baseUrl = environment.apiUrl + 'profile/';
 
-constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-getProfileInfo(): Observable<UserInfo> {
-  return this.http.get<UserInfo>(this.baseUrl);
-}
+  getProfileInfo(): Observable<UserInfo> {
+    return this.http.get<UserInfo>(this.baseUrl);
+  }
+
+  editProfileInfo(model: FormData) {
+    return this.http.post(this.baseUrl + 'EditProfile', model);
+  }
 
 }
