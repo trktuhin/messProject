@@ -3,12 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   baseUrl = environment.apiUrl + 'auth/';
+  decodedToken: any;
+  currentUser: any;
+  photoUrl = new BehaviorSubject<string>(environment.baseImageUrl + '/user.jpg');
+  currentPhotoUrl = this.photoUrl.asObservable();
   jwtHelper = new JwtHelperService();
   get IsLoggedIn() {
     let result = false;
@@ -22,38 +27,29 @@ export class AuthService {
   }
 
   constructor(private http: HttpClient) { }
+  changeProfilePhoto(photoName: string) {
+    this.photoUrl.next(environment.baseImageUrl + photoName);
+  }
   login(model: any) {
     return this.http.post(this.baseUrl + 'login', model).pipe(
       map((response: any) => {
         const user = response;
         if (user) {
           localStorage.setItem('token', user.token);
-          const decodedToken = this.jwtHelper.decodeToken(user.token);
-          localStorage.setItem('messName', decodedToken.Messname);
-          localStorage.setItem('username', decodedToken.unique_name);
+          localStorage.setItem('user', JSON.stringify(user.user));
+          this.decodedToken = this.jwtHelper.decodeToken(user.token);
+          if (user.user) {
+            this.currentUser = user.user;
+            this.changeProfilePhoto(this.currentUser.photoUrl);
+          }
         }
       })
     );
   }
 
-  getProfilePicture() {
-    const loggedIn = this.IsLoggedIn;
-    if (loggedIn) {
-      const token = localStorage.getItem('token');
-      const decodedToken = this.jwtHelper.decodeToken(token);
-      if (!!decodedToken.ImageUrl) {
-        return 'http://localhost:5000/images/' + decodedToken.ImageUrl;
-      }
-      else {
-        return 'http://localhost:5000/images/user.jpg';
-      }
-    }
-  }
-
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('messName');
-    localStorage.removeItem('username');
+    localStorage.removeItem('user');
   }
 
   register(model: any) {

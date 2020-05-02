@@ -3,6 +3,8 @@ import { Plugins, Capacitor, CameraSource, CameraResultType, CameraPhoto } from 
 import { Platform } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProfileService } from '../_services/profile.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from '../_services/auth.service';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -36,7 +38,8 @@ export class ProfilePage implements OnInit {
   imgFile: Blob;
   usePicker = false;
   profileForm: FormGroup;
-  constructor(private platform: Platform, private fb: FormBuilder, private profleService: ProfileService) { }
+  constructor(private platform: Platform, private fb: FormBuilder,
+              private profleService: ProfileService, private authService: AuthService) { }
   ngOnInit() {
     if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
@@ -53,10 +56,9 @@ export class ProfilePage implements OnInit {
         emailAddress: res.email
       });
       if (res.photoUrl) {
-        this.selectedImageUrl = 'http://localhost:5000/images/' + res.photoUrl;
-      }
-      else{
-        this.selectedImageUrl = 'http://localhost:5000/images/user.jpg';
+        this.selectedImageUrl = environment.baseImageUrl + res.photoUrl;
+      } else {
+        this.selectedImageUrl = environment.baseImageUrl + '/user.jpg';
       }
     });
   }
@@ -92,7 +94,7 @@ export class ProfilePage implements OnInit {
         try {
           this.imgFile = base64toBlob(imgData.replace('data:image/jpeg;base64,', ''), 'image/jpeg');
           // console.log('YOUR FILE', this.imgFile);
-          this.profileForm.patchValue({image: this.imgFile});
+          this.profileForm.patchValue({ image: this.imgFile });
         } catch (error) {
           console.log('COULD NOT CONVERT YOUR FILE');
         }
@@ -115,20 +117,23 @@ export class ProfilePage implements OnInit {
       this.selectedImageUrl = fr.result.toString();
       this.imgFile = pickedFile;
       // console.log(this.imgFile);
-      this.profileForm.patchValue({image: this.imgFile});
+      this.profileForm.patchValue({ image: this.imgFile });
     };
     fr.readAsDataURL(pickedFile);
   }
 
   onSubmitForm() {
-    let model = new FormData();
+    const model = new FormData();
     model.append('firstName', this.profileForm.get('firstName').value);
     model.append('lastName', this.profileForm.get('lastName').value);
     model.append('email', this.profileForm.get('emailAddress').value);
     model.append('image', this.profileForm.get('image').value);
 
     this.profleService.editProfileInfo(model).subscribe(res => {
-      console.log(res);
+      const user: any = res;
+      localStorage.setItem('user', JSON.stringify(user));
+      this.authService.currentUser = user;
+      this.authService.changeProfilePhoto(user.photoUrl);
     }, err => console.log(err));
   }
 }

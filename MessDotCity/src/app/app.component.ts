@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthService } from './_services/auth.service';
 import { Router } from '@angular/router';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class AppComponent implements OnInit {
   public selectedIndex = 0;
-  // selectedImageUrl = 'http://localhost:5000/images/robin.jpg';
+  photoUrl: string;
 
   public memberNav = [
     {
@@ -84,6 +85,7 @@ export class AppComponent implements OnInit {
     }
   ];
   activePath = '';
+  jwtHelper = new JwtHelperService();
 
   constructor(
     private platform: Platform,
@@ -112,17 +114,21 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
+    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.authService.decodedToken = this.jwtHelper.decodeToken(token);
+    }
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      this.authService.currentUser = user;
+      this.authService.changeProfilePhoto(user.photoUrl);
+    }
   }
 
   logout() {
     this.authService.logout();
     this.router.navigateByUrl('/auth');
-  }
-  getMessname() {
-    return localStorage.getItem('messName');
-  }
-  getUsername() {
-    return localStorage.getItem('username');
   }
   gotoProfile() {
     this.router.navigate(['profile']);

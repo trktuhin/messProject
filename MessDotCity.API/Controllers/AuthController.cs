@@ -3,7 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using MessDotCity.API.Data;
+using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Dtos;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -20,8 +22,10 @@ namespace MessDotCity.API.Controllers
     {
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _configuration;
-        public AuthController(IAuthRepository repo, IConfiguration configuration)
+        private readonly IMapper _mapper;
+        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper)
         {
+            _mapper = mapper;
             _configuration = configuration;
             _repo = repo;
         }
@@ -45,18 +49,10 @@ namespace MessDotCity.API.Controllers
         {
             var userFromRepo = await _repo.Login(dto.Mobile, dto.Password);
             if (userFromRepo == null) return Unauthorized();
-            string photoUrl = "";
-            if(userFromRepo.PhotoUrl != null)
-            {
-                photoUrl = userFromRepo.PhotoUrl;
-            }
-
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserId),
-                new Claim(ClaimTypes.Name, userFromRepo.FirstName+" "+userFromRepo.LastName),
-                new Claim("Messname", "Your messname"),
-                new Claim("ImageUrl", photoUrl)
+                new Claim("Messname", "Your messname")
             };
             var key = new SymmetricSecurityKey
                 (Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
@@ -69,8 +65,11 @@ namespace MessDotCity.API.Controllers
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return Ok(new {
-                token = tokenHandler.WriteToken(token)
+            var userResource = _mapper.Map<UserProfileResource>(userFromRepo);
+            return Ok(new
+            {
+                token = tokenHandler.WriteToken(token),
+                user = userResource
             });
         }
 

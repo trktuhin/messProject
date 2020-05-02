@@ -58,7 +58,8 @@ namespace MessDotCity.API.Controllers
                 await UploadPhoto(dto.Image, profile);
             }
             await _uow.Complete();
-            return Ok();
+            var userResource = _mapper.Map<UserProfileResource>(profile);
+            return Ok(userResource);
         }
 
         private async Task UploadPhoto(IFormFile imageFile, UserInfo profile)
