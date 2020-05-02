@@ -36,6 +36,7 @@ namespace MessDotCity.API
             services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IProfileRepository,ProfileRepository>();
+            services.AddScoped<IMessRepository,MessRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {

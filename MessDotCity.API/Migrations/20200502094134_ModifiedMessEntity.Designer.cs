@@ -3,14 +3,16 @@ using System;
 using MessDotCity.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MessDotCity.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200502094134_ModifiedMessEntity")]
+    partial class ModifiedMessEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,11 +31,7 @@ namespace MessDotCity.API.Migrations
 
                     b.Property<string>("FirstName");
 
-                    b.Property<DateTime>("LastModifiedOn");
-
                     b.Property<string>("LastName");
-
-                    b.Property<int>("MessId");
 
                     b.Property<string>("Mobile");
 
@@ -52,10 +50,6 @@ namespace MessDotCity.API.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<DateTime>("LastModifiedOn");
 
                     b.Property<string>("Location");
 

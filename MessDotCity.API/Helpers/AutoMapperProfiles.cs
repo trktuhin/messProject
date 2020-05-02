@@ -12,6 +12,7 @@ namespace MessDotCity.API.Helpers
             CreateMap<UserInfo, UserProfileResource>();
             CreateMap<UserProfileResource, UserInfo>();
             CreateMap<ProfileSubmitDto, UserInfo>();
+            CreateMap<MessCreationDto, MessInfo>();
         }
     }
 }

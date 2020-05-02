@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MessService } from '../_services/mess.service';
 
 @Component({
   selector: 'app-create-mess',
@@ -8,7 +9,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class CreateMessPage implements OnInit {
   messForm: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private messService: MessService) { }
 
   ngOnInit() {
     this.createmessForm();
@@ -28,7 +29,17 @@ export class CreateMessPage implements OnInit {
   }
 
   createMess() {
-    console.log(this.messForm);
+    const model = {
+      messName: this.messForm.get('messName').value,
+      location: this.messForm.get('location').value,
+      MealChangeFrom: this.messForm.get('updateFrom').value,
+      MealChangeTo: this.messForm.get('updateTo').value,
+      secretCode: this.messForm.get('secretCode').value
+    };
+    console.log(model);
+    this.messService.createMess(model).subscribe(res => {
+
+    }, err => console.log(err));
   }
 
   updateTimeValidator(g: FormGroup) {

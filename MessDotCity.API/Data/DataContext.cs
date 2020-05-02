@@ -8,5 +8,7 @@ namespace MessDotCity.API.Data
         public DataContext(DbContextOptions<DataContext> options): base(options){}
 
         public DbSet<UserInfo> Users { get; set; }
+        public DbSet<MessInfo> Messes { get; set; }
+        public DbSet<Member> Members { get; set; }
     }
 }
