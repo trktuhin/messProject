@@ -30,15 +30,11 @@ export class DepositsPage implements OnInit {
       balance: 300
     }
   ];
-  messname = '';
   backButtonSubscription: Subscription;
-  constructor(private route: ActivatedRoute, private modalCtrl: ModalController, 
+  constructor(private modalCtrl: ModalController,
               private platform: Platform) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
   }
 
   ionViewWillEnter() {

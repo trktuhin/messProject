@@ -14,4 +14,12 @@ export class MessService {
     return this.http.post(this.baseUrl + 'createMess', model);
   }
 
+  getMess(): any {
+    return this.http.get(this.baseUrl);
+  }
+
+  updateMess(model: any) {
+    return this.http.put(this.baseUrl + 'updatemess', model);
+  }
+
 }

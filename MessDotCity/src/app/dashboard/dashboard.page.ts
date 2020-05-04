@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./dashboard.page.scss'],
 })
 export class DashboardPage implements OnInit {
-  messname = '';
   selectedSegment = 'summary';
   mealRate = 50.45;
   otherExpense = 125.35;
@@ -81,16 +80,12 @@ export class DashboardPage implements OnInit {
     }
   ];
   backButtonSubscription: Subscription;
-  constructor(private route: ActivatedRoute, private platform: Platform) { }
+  constructor(private platform: Platform) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
   }
 
   ionViewWillEnter() {
-    // console.log('from will enter');
     this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
       navigator['app'].exitApp();
     });

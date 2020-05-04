@@ -23,8 +23,10 @@ namespace MessDotCity.API.Controllers
         private readonly IAuthRepository _repo;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper)
+        private readonly IMessRepository _messRepo;
+        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper, IMessRepository messRepo)
         {
+            _messRepo = messRepo;
             _mapper = mapper;
             _configuration = configuration;
             _repo = repo;
@@ -49,10 +51,25 @@ namespace MessDotCity.API.Controllers
         {
             var userFromRepo = await _repo.Login(dto.Mobile, dto.Password);
             if (userFromRepo == null) return Unauthorized();
+            var messId = 0;
+            var messRole = "";
+            var messName = "";
+            var existingMember = await _messRepo.GetMemberByUserId(userFromRepo.UserId);
+            if(existingMember != null)
+            {
+                messId = existingMember.MessId;
+                messRole = existingMember.MessRole;
+                var existingMess = await _messRepo.GetmessByMessId(messId);
+                if(existingMess !=null)
+                {
+                    messName = existingMess.MessName;
+                }
+            }
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userFromRepo.UserId),
-                new Claim("Messname", "Your messname")
+                new Claim("MessId", messId.ToString()),
+                new Claim("messRole", messRole)
             };
             var key = new SymmetricSecurityKey
                 (Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
@@ -69,7 +86,8 @@ namespace MessDotCity.API.Controllers
             return Ok(new
             {
                 token = tokenHandler.WriteToken(token),
-                user = userResource
+                user = userResource,
+                messName = messName
             });
         }
 

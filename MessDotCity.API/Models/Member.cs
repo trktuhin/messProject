@@ -16,5 +16,6 @@ namespace MessDotCity.API.Models
         public string Mobile { get; set; }
         public DateTime LastModifiedOn { get; set; }
         public int MessId { get; set; }
+        public string MessRole { get; set; }
     }
 }

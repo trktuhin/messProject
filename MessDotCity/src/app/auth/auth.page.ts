@@ -80,7 +80,7 @@ export class AuthPage implements OnInit {
     };
     this.authService.login(model).subscribe(next => {
       console.log('logged in successfully');
-      this.router.navigateByUrl('/dashboard/messname');
+      this.router.navigateByUrl('/dashboard');
     }, err => console.log(err));
   }
 
@@ -96,7 +96,7 @@ export class AuthPage implements OnInit {
     }, err => console.log(err),
     () => {
       this.authService.login(model).subscribe(() => {
-        this.router.navigateByUrl('/dashboard/messname');
+        this.router.navigateByUrl('/dashboard');
       });
     });
   }

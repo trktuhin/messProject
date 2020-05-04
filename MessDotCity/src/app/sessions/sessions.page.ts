@@ -9,7 +9,6 @@ import { AlertController, ToastController } from '@ionic/angular';
   styleUrls: ['./sessions.page.scss'],
 })
 export class SessionsPage implements OnInit {
-  messname = '';
   sessions: SessionInfo[] = [
     {
       sessionId: 1,
@@ -24,13 +23,10 @@ export class SessionsPage implements OnInit {
       sessionEnd: new Date(2020, 1, 28)
     }
   ];
-  constructor(private route: ActivatedRoute, private alertCtrl: AlertController,
+  constructor(private alertCtrl: AlertController,
               private toastCtrl: ToastController) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
   }
 
   onDeleteSession(id: number) {

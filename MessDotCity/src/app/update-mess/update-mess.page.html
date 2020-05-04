@@ -3,7 +3,8 @@
     <ion-buttons slot="start">
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
-    <ion-title>Update Mess</ion-title>
+    <ion-title><ion-label><ion-icon slot="start" name="grid"></ion-icon></ion-label>
+      Update Mess</ion-title>
     <ion-buttons slot="primary">
       <ion-button [disabled]="!messForm.valid" (click)="updateMess()">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
@@ -42,10 +43,6 @@
             messForm.get('secretCode').touched &&
               messForm.hasError('whiteSpaceCode')
           }"></ion-input>
-        </ion-item>
-        <ion-item class="form-group w-300px mx-auto">
-          <ion-label>Add yourself a member</ion-label>
-          <ion-checkbox color="primary" slot="end" checked="true" formControlName="selfMember"></ion-checkbox>
         </ion-item>
       </ion-list>
     </div>

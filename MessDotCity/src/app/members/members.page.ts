@@ -12,7 +12,6 @@ import { Subscription } from 'rxjs';
 })
 export class MembersPage implements OnInit {
   selectedSegment = 'members';
-  messname = '';
   members = [
     {
       memberId: 1,
@@ -75,13 +74,9 @@ export class MembersPage implements OnInit {
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private router: Router,
-              private route: ActivatedRoute,
               private platform: Platform) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
   }
   ionViewWillEnter() {
     // console.log('from will enter');
@@ -95,11 +90,11 @@ export class MembersPage implements OnInit {
    }
 
   viewMeals(memberId: number) {
-    this.router.navigate(['/members/messname/2/view-meals']);
+    this.router.navigate(['/members/2/view-meals']);
   }
 
   memberDetails(id: number) {
-    this.router.navigate(['members/messname', id]);
+    this.router.navigate(['members', id]);
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {

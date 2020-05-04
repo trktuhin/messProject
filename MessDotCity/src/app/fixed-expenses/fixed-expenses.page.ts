@@ -8,16 +8,11 @@ import { FixedExpense } from '../_models/fixedExpense';
   styleUrls: ['./fixed-expenses.page.scss'],
 })
 export class FixedExpensesPage implements OnInit {
-  messname = '';
   totalMembers = 3;
   fixedExpenses: FixedExpense[] = [];
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
-
     this.fixedExpenses = [
       {
         id: 1,
@@ -52,7 +47,7 @@ export class FixedExpensesPage implements OnInit {
   }
 
   editExpense(id: number) {
-    this.router.navigate(['fixed-expenses', this.messname, 'edit-expense', id]);
+    this.router.navigate(['fixed-expenses', 'edit-expense', id]);
   }
 
 }

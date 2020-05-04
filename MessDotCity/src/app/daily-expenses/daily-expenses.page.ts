@@ -7,7 +7,6 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./daily-expenses.page.scss'],
 })
 export class DailyExpensesPage implements OnInit {
-  messname = '';
   dailyExpeses = [
     {
       totalExpense: 400,
@@ -28,17 +27,14 @@ export class DailyExpensesPage implements OnInit {
       totalMeals: 8
     }
   ];
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      this.messname = params.get('messname');
-    });
   }
 
   editMeals(exDate: Date) {
     const dateString = exDate.getFullYear() + '-' + exDate.getMonth() + '-' + exDate.getDate();
-    this.router.navigate(['daily-expenses', this.messname, 'edit-meals', dateString]);
+    this.router.navigate(['daily-expenses', 'edit-meals', dateString]);
   }
 
 

@@ -12,6 +12,7 @@ export class AuthService {
   baseUrl = environment.apiUrl + 'auth/';
   decodedToken: any;
   currentUser: any;
+  messName: string;
   photoUrl = new BehaviorSubject<string>(environment.baseImageUrl + '/user.jpg');
   currentPhotoUrl = this.photoUrl.asObservable();
   jwtHelper = new JwtHelperService();
@@ -37,10 +38,12 @@ export class AuthService {
         if (user) {
           localStorage.setItem('token', user.token);
           localStorage.setItem('user', JSON.stringify(user.user));
+          localStorage.setItem('messName', user.messName);
           this.decodedToken = this.jwtHelper.decodeToken(user.token);
           if (user.user) {
             this.currentUser = user.user;
             this.changeProfilePhoto(this.currentUser.photoUrl);
+            this.messName = user.messName;
           }
         }
       })
@@ -50,6 +53,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('messName');
   }
 
   register(model: any) {

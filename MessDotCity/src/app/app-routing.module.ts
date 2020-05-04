@@ -5,7 +5,7 @@ import { AuthGuardService } from './_guards/auth-guard.service';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'auth',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
   },
   {
@@ -13,7 +13,7 @@ const routes: Routes = [
     loadChildren: () => import('./auth/auth.module').then( m => m.AuthPageModule)
   },
   {
-    path: 'dashboard/:messname',
+    path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule),
     canLoad: [AuthGuardService]
   },
@@ -32,32 +32,39 @@ const routes: Routes = [
     loadChildren: () => import('./visit/visit.module').then( m => m.VisitPageModule)
   },
   {
-    path: 'members/:messname',
-    loadChildren: () => import('./members/members.module').then( m => m.MembersPageModule)
+    path: 'members',
+    loadChildren: () => import('./members/members.module').then( m => m.MembersPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'update-mess/:messname',
-    loadChildren: () => import('./update-mess/update-mess.module').then( m => m.UpdateMessPageModule)
+    path: 'update-mess',
+    loadChildren: () => import('./update-mess/update-mess.module').then( m => m.UpdateMessPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'sessions/:messname',
-    loadChildren: () => import('./sessions/sessions.module').then( m => m.SessionsPageModule)
+    path: 'sessions',
+    loadChildren: () => import('./sessions/sessions.module').then( m => m.SessionsPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'deposits/:messname',
-    loadChildren: () => import('./deposits/deposits.module').then( m => m.DepositsPageModule)
+    path: 'deposits',
+    loadChildren: () => import('./deposits/deposits.module').then( m => m.DepositsPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'notices/:messname',
-    loadChildren: () => import('./notices/notices.module').then( m => m.NoticesPageModule)
+    path: 'notices',
+    loadChildren: () => import('./notices/notices.module').then( m => m.NoticesPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'daily-expenses/:messname',
-    loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule)
+    path: 'daily-expenses',
+    loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule),
+    canLoad: [AuthGuardService]
   },
   {
-    path: 'fixed-expenses/:messname',
-    loadChildren: () => import('./fixed-expenses/fixed-expenses.module').then( m => m.FixedExpensesPageModule)
+    path: 'fixed-expenses',
+    loadChildren: () => import('./fixed-expenses/fixed-expenses.module').then( m => m.FixedExpensesPageModule),
+    canLoad: [AuthGuardService]
   }
 ];
 

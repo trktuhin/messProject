@@ -19,60 +19,49 @@ export class AppComponent implements OnInit {
   public memberNav = [
     {
       title: 'Dashboard',
-      url: '/dashboard/messname',
+      url: '/dashboard',
       icon: 'home'
     },
     {
       title: 'Members',
-      url: '/members/messname',
+      url: '/members',
       icon: 'people'
     },
     {
       title: 'Daily Expenses',
-      url: '/daily-expenses/messname',
+      url: '/daily-expenses',
       icon: 'receipt'
     },
     {
       title: 'Fixed Expenses',
-      url: '/fixed-expenses/messname',
+      url: '/fixed-expenses',
       icon: 'reader'
     },
     {
       title: 'Sessions',
-      url: '/sessions/messname',
+      url: '/sessions',
       icon: 'calendar'
     },
     {
       title: 'Deposits',
-      url: '/deposits/messname',
+      url: '/deposits',
       icon: 'cash'
     },
     {
       title: 'Notices',
-      url: '/notices/messname',
+      url: '/notices',
       icon: 'chatbubble-ellipses'
     }
   ];
 
-  public appPages = [
-    {
-      title: 'Create Mess',
-      url: '/create-mess',
-      icon: 'add-circle'
-    },
-    {
-      title: 'Update Mess',
-      url: '/update-mess/messname',
-      icon: 'grid'
-    },
+  public appPages = [];
+
+  public anonymousPage = [
     {
       title: 'Visit Anonymously',
       url: '/visit',
       icon: 'skull'
-    }
-  ];
-
-  public anonymousPage = [
+    },
     {
       title: 'Sign In / Sign Up',
       url: '/auth',
@@ -116,6 +105,7 @@ export class AppComponent implements OnInit {
     }
     this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
     const token = localStorage.getItem('token');
+    const messName = localStorage.getItem('messName');
     if (token) {
       this.authService.decodedToken = this.jwtHelper.decodeToken(token);
     }
@@ -123,6 +113,20 @@ export class AppComponent implements OnInit {
     if (user) {
       this.authService.currentUser = user;
       this.authService.changeProfilePhoto(user.photoUrl);
+      this.authService.messName = messName;
+    }
+    if (messName) {
+      this.appPages.unshift({
+        title: 'Update Mess',
+        url: '/update-mess',
+        icon: 'grid'
+      });
+    } else {
+      this.appPages.unshift({
+        title: 'Update Mess',
+        url: '/update-mess',
+        icon: 'grid'
+      });
     }
   }
 

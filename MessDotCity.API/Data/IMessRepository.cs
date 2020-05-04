@@ -9,5 +9,7 @@ namespace MessDotCity.API.Data
          void Add<T>(T entity) where T:class;
          void Delete<T>(T entity) where T:class;
          Task<MessInfo> GetMessByOwner(string userId);
+         Task<Member> GetMemberByUserId(string userId);
+         Task<MessInfo> GetmessByMessId(int messId);
     }
 }

@@ -23,10 +23,19 @@ namespace MessDotCity.API.Data
             _context.Remove(entity);
         }
 
+        public async Task<Member> GetMemberByUserId(string userId)
+        {
+            return await _context.Members.FirstOrDefaultAsync(m => m.UserId == userId);
+        }
+
+        public async Task<MessInfo> GetmessByMessId(int messId)
+        {
+            return await _context.Messes.FirstOrDefaultAsync(m => m.Id == messId);
+        }
+
         public async Task<MessInfo> GetMessByOwner(string userId)
         {
-            var messInfo = await _context.Messes.FirstOrDefaultAsync(m => m.OwnerId == userId);
-            return messInfo;
+            return await _context.Messes.FirstOrDefaultAsync(m => m.OwnerId == userId);
         }
     }
 }

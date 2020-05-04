@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Plugins, Capacitor, CameraSource, CameraResultType, CameraPhoto } from '@capacitor/core';
-import { Platform } from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProfileService } from '../_services/profile.service';
 import { environment } from 'src/environments/environment';
@@ -39,7 +39,8 @@ export class ProfilePage implements OnInit {
   usePicker = false;
   profileForm: FormGroup;
   constructor(private platform: Platform, private fb: FormBuilder,
-              private profleService: ProfileService, private authService: AuthService) { }
+              private profleService: ProfileService, private authService: AuthService,
+              private toastCntrl: ToastController) { }
   ngOnInit() {
     if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
@@ -134,6 +135,11 @@ export class ProfilePage implements OnInit {
       localStorage.setItem('user', JSON.stringify(user));
       this.authService.currentUser = user;
       this.authService.changeProfilePhoto(user.photoUrl);
+      this.toastCntrl.create({
+        message: 'Profile updated successfully',
+        duration: 2000,
+        color: 'success'
+      }).then(el => el.present());
     }, err => console.log(err));
   }
 }
