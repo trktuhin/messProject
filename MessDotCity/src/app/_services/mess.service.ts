@@ -21,5 +21,8 @@ export class MessService {
   updateMess(model: any) {
     return this.http.put(this.baseUrl + 'updatemess', model);
   }
+  deleteMess() {
+    return this.http.post(this.baseUrl + 'deleteMess', {});
+  }
 
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MessService } from '../_services/mess.service';
+import { AuthService } from '../_services/auth.service';
+import { Router } from '@angular/router';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-create-mess',
@@ -9,7 +12,11 @@ import { MessService } from '../_services/mess.service';
 })
 export class CreateMessPage implements OnInit {
   messForm: FormGroup;
-  constructor(private fb: FormBuilder, private messService: MessService) { }
+  constructor(private fb: FormBuilder,
+    private messService: MessService,
+    private authService: AuthService,
+    private toastCtrl: ToastController,
+    private router: Router) { }
 
   ngOnInit() {
     this.createmessForm();
@@ -36,21 +43,28 @@ export class CreateMessPage implements OnInit {
       MealChangeTo: this.messForm.get('updateTo').value,
       secretCode: this.messForm.get('secretCode').value
     };
-    console.log(model);
-    this.messService.createMess(model).subscribe(res => {
-
-    }, err => console.log(err));
+    this.messService.createMess(model).subscribe(() => {
+      localStorage.setItem('messName', model.messName);
+      this.authService.changeMessName(model.messName);
+      this.router.navigate(['dashboard']);
+    }, err => {
+      this.toastCtrl.create({
+        message: err,
+        duration: 2000,
+        color: 'danger'
+      }).then(el => el.present());
+    });
   }
 
   updateTimeValidator(g: FormGroup) {
-    return g.get('updateFrom').value < g.get('updateTo').value ? null : {timeInvalid: true};
+    return g.get('updateFrom').value < g.get('updateTo').value ? null : { timeInvalid: true };
   }
 
   messNameValidator(g: FormGroup) {
-    return (/^[a-zA-Z0-9]*$/.test(g.get('messName').value.toString())) ? null : {whiteSpaceName: true};
+    return (/^[a-zA-Z0-9]*$/.test(g.get('messName').value.toString())) ? null : { whiteSpaceName: true };
   }
 
   secretCodeValidator(g: FormGroup) {
-    return (/^[a-zA-Z0-9]*$/.test(g.get('secretCode').value.toString())) ? null : {whiteSpaceCode: true};
+    return (/^[a-zA-Z0-9]*$/.test(g.get('secretCode').value.toString())) ? null : { whiteSpaceCode: true };
   }
 }

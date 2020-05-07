@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MessService } from '../_services/mess.service';
-import { ToastController } from '@ionic/angular';
+import { ToastController, AlertController } from '@ionic/angular';
+import { AuthService } from '../_services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-update-mess',
@@ -11,7 +13,12 @@ import { ToastController } from '@ionic/angular';
 export class UpdateMessPage implements OnInit {
   messForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private messService: MessService, private toastCtrl: ToastController) { }
+  constructor(private fb: FormBuilder, private messService: MessService,
+              private toastCtrl: ToastController,
+              private authService: AuthService,
+              private alertCtrl: AlertController,
+              private router: Router)
+             { }
 
   ngOnInit() {
     this.createmessForm();
@@ -63,6 +70,35 @@ export class UpdateMessPage implements OnInit {
         color: 'success'
     }).then(el => el.present());
     }, err => console.log(err));
+  }
+
+  deleteMess() {
+    this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: 'Your mess will be permanently deleted',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+        },
+        {
+          text: 'Confirm',
+          handler: () => {
+            this.messService.deleteMess().subscribe(() => {
+              this.toastCtrl.create({
+                message: 'Mess was deleted successfully',
+                duration: 2000,
+                color: 'success'
+            }).then(el => el.present());
+              localStorage.setItem('messName', '');
+              this.authService.changeMessName('');
+              this.router.navigate(['create-mess']);
+            }, err => console.log(err));
+          }
+        }
+      ]
+    }).then(el => el.present());
   }
 
 }

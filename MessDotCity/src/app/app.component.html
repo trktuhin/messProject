@@ -15,9 +15,9 @@
               </div>
             </div>
           </ion-note>
-          <ion-item-divider>
+          <ion-item-divider *ngIf="messName">
             <ion-label>
-              {{authService.messName}}
+              {{messName|titlecase}}
             </ion-label>
           </ion-item-divider>
           <ion-menu-toggle auto-hide="false" *ngFor="let mn of memberNav">

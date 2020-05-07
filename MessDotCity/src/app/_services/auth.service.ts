@@ -12,9 +12,10 @@ export class AuthService {
   baseUrl = environment.apiUrl + 'auth/';
   decodedToken: any;
   currentUser: any;
-  messName: string;
+  messName = new BehaviorSubject<string>('');
   photoUrl = new BehaviorSubject<string>(environment.baseImageUrl + '/user.jpg');
   currentPhotoUrl = this.photoUrl.asObservable();
+  currentMessName = this.messName.asObservable();
   jwtHelper = new JwtHelperService();
   get IsLoggedIn() {
     let result = false;
@@ -26,10 +27,18 @@ export class AuthService {
     }
     return result;
   }
+  haveMess() {
+    const messName = localStorage.getItem('messName');
+    if (messName) { return true; }
+    return false;
+  }
 
   constructor(private http: HttpClient) { }
   changeProfilePhoto(photoName: string) {
     this.photoUrl.next(environment.baseImageUrl + photoName);
+  }
+  changeMessName(messName: string) {
+    this.messName.next(messName);
   }
   login(model: any) {
     return this.http.post(this.baseUrl + 'login', model).pipe(
@@ -43,7 +52,7 @@ export class AuthService {
           if (user.user) {
             this.currentUser = user.user;
             this.changeProfilePhoto(this.currentUser.photoUrl);
-            this.messName = user.messName;
+            this.changeMessName(user.messName);
           }
         }
       })

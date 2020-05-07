@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { MemberInfo } from '../_models/memberInfo';
 import { MemberForSummary } from '../_models/memberForSummary';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Platform } from '@ionic/angular';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-dashboard',

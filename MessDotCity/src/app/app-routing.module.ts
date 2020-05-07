@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { AuthGuardService } from './_guards/auth-guard.service';
+import { MessGuardService } from './_guards/mess-guard.service';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'profile',
@@ -34,37 +35,37 @@ const routes: Routes = [
   {
     path: 'members',
     loadChildren: () => import('./members/members.module').then( m => m.MembersPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'update-mess',
     loadChildren: () => import('./update-mess/update-mess.module').then( m => m.UpdateMessPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'sessions',
     loadChildren: () => import('./sessions/sessions.module').then( m => m.SessionsPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'deposits',
     loadChildren: () => import('./deposits/deposits.module').then( m => m.DepositsPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'notices',
     loadChildren: () => import('./notices/notices.module').then( m => m.NoticesPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'daily-expenses',
     loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   },
   {
     path: 'fixed-expenses',
     loadChildren: () => import('./fixed-expenses/fixed-expenses.module').then( m => m.FixedExpensesPageModule),
-    canLoad: [AuthGuardService]
+    canLoad: [AuthGuardService, MessGuardService]
   }
 ];
 

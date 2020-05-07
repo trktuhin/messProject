@@ -33,6 +33,9 @@ ion-toolbar ion-title {
     text-align: center;
     line-height: 75px;
 }
+.pointer-curson{
+    cursor: pointer;
+}
 @media (max-width: 768px) {
     .hide-sm{
         display: none !important;

@@ -43,6 +43,9 @@ namespace MessDotCity.API.Controllers
             //checking if member of a mess
             var existingMember = await _repo.GetMemberByUserId(currentUserId);
             if (existingMember != null) return BadRequest("Already in a membership !");
+            // checking if there's a mess of the same name
+            var messExist = await _repo.GetmessByMessName(dto.MessName);
+            if(messExist != null) return BadRequest("Mess name already exists !");
             //creating mess
             var messToCreate = _mapper.Map<MessInfo>(dto);
             messToCreate.CreatedOn = DateTime.Now;
@@ -55,6 +58,7 @@ namespace MessDotCity.API.Controllers
             var currentUser = await _proRepo.GetUserProfileData(currentUserId);
             var memberToCreate = _mapper.Map<Member>(currentUser);
             memberToCreate.MessId = messToCreate.Id;
+            memberToCreate.MessRole = "admin";
             _repo.Add(memberToCreate);
             await _uow.Complete();
             return Ok();
@@ -67,6 +71,21 @@ namespace MessDotCity.API.Controllers
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
             if(ownedMess == null) return BadRequest("You don't own a mess");
             _mapper.Map<MessUpdateDto, MessInfo>(dto, ownedMess);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpPost("deleteMess")]
+        public async Task<IActionResult> DeleteMess()
+        {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null) return BadRequest("You don't own a mess");
+            //delete all members
+            var members = await _repo.GetMembersByMessId(ownedMess.Id);
+            _repo.RemoveMultiple(members);
+            //deleting mess
+            _repo.Delete(ownedMess);
             await _uow.Complete();
             return Ok();
         }
