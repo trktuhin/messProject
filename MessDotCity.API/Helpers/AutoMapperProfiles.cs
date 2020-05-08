@@ -15,6 +15,7 @@ namespace MessDotCity.API.Helpers
             CreateMap<ProfileSubmitDto, UserInfo>();
             CreateMap<MessCreationDto, MessInfo>();
             CreateMap<MessInfo, MessResource>();
+            CreateMap<MemberCreationDto, Member>();
             CreateMap<MessUpdateDto, MessInfo>()
                 .ForMember(des => des.MealChangeFrom, 
                 opt => opt.Condition(source => source.MealChangeFrom != null))

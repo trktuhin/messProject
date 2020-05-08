@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MemberInfo } from 'src/app/_models/memberInfo';
+import { MembersService } from 'src/app/_services/members.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-member',
@@ -9,7 +12,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class AddMemberPage implements OnInit {
 
   memberForm: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private memberService: MembersService, private router: Router) { }
 
   ngOnInit() {
     this.createMemberForm();
@@ -26,6 +29,16 @@ export class AddMemberPage implements OnInit {
   }
 
   addMember() {
-    console.log(this.memberForm);
+    const model: MemberInfo = {
+      firstName: this.memberForm.get('firstName').value,
+      lastName: this.memberForm.get('lastName').value,
+      dBreakfast: this.memberForm.get('dBreakfast').value,
+      dLunch: this.memberForm.get('dLunch').value,
+      dDinner: this.memberForm.get('dDinner').value
+    };
+
+    this.memberService.addMember(model).subscribe((res) => {
+      this.router.navigate(['members']);
+    }, err => console.log(err));
   }
 }

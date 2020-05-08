@@ -23,10 +23,10 @@ export class DashboardPage implements OnInit {
       dBreakfast: 0,
       dLunch: 1,
       dDinner: 1,
-      memberId: 1,
+      id: 1,
       userId: 2,
       // tslint:disable-next-line: max-line-length
-      photoUrl: 'https://cdn.vox-cdn.com/thumbor/Oi6jzvQzWetJGlkpwLqlP1L9p28=/0x0:5568x3712/1200x800/filters:focal(2858x720:3748x1610)/cdn.vox-cdn.com/uploads/chorus_image/image/62207705/922984782.jpg.0.jpg'
+      photoName: 'https://cdn.vox-cdn.com/thumbor/Oi6jzvQzWetJGlkpwLqlP1L9p28=/0x0:5568x3712/1200x800/filters:focal(2858x720:3748x1610)/cdn.vox-cdn.com/uploads/chorus_image/image/62207705/922984782.jpg.0.jpg'
     },
     {
       firstName: 'Imran',
@@ -34,9 +34,9 @@ export class DashboardPage implements OnInit {
       dBreakfast: 0,
       dLunch: 1,
       dDinner: 1,
-      memberId: 2,
+      id: 2,
       userId: 2,
-      photoUrl: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
+      photoName: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
     },
     {
       firstName: 'Dipu',
@@ -44,9 +44,9 @@ export class DashboardPage implements OnInit {
       dBreakfast: 0,
       dLunch: 1,
       dDinner: 1,
-      memberId: 3,
+      id: 3,
       userId: 2,
-      photoUrl: 'https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg'
+      photoName: 'https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg'
     }
   ];
 

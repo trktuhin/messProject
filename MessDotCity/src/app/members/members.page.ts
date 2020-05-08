@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { SegmentChangeEventDetail } from '@ionic/core';
 import { ModalController, ToastController, AlertController, Platform } from '@ionic/angular';
 import { ReplaceMemberComponent } from './replace-member/replace-member.component';
-import { Router, ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Router} from '@angular/router';
+import { MembersService } from '../_services/members.service';
+import { MemberInfo } from '../_models/memberInfo';
 
 @Component({
   selector: 'app-members',
@@ -12,36 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class MembersPage implements OnInit {
   selectedSegment = 'members';
-  members = [
-    {
-      memberId: 1,
-      firstName: 'Robin',
-      lastName: 'Khan',
-      photoUrl: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
-      userId: 1,
-      mobile: '01677048891',
-      profession: 'Engineer'
-    },
-    {
-      memberId: 2,
-      firstName: 'Imran',
-      lastName: 'Uddin',
-      photoUrl: 'https://i.pinimg.com/originals/6d/62/f0/6d62f0fb9edea6121981088f95ef5e53.jpg',
-      userId: 1,
-      mobile: '01677048892',
-      profession: 'Student'
-    },
-    {
-      memberId: 3,
-      firstName: 'Dipu',
-      lastName: 'Rana',
-      // tslint:disable-next-line: max-line-length
-      photoUrl: 'https://cdn.vox-cdn.com/thumbor/Oi6jzvQzWetJGlkpwLqlP1L9p28=/0x0:5568x3712/1200x800/filters:focal(2858x720:3748x1610)/cdn.vox-cdn.com/uploads/chorus_image/image/62207705/922984782.jpg.0.jpg',
-      userId: 1,
-      mobile: '01677048893',
-      profession: 'Business-man'
-    }
-  ];
+  members: MemberInfo[] = [];
 
   requests = [
     {
@@ -69,24 +41,18 @@ export class MembersPage implements OnInit {
       mobile: '01677048893'
     }
   ];
-  backButtonSubscription: Subscription;
   constructor(private modalCtrl: ModalController,
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
-              private router: Router,
-              private platform: Platform) { }
+              private memberService: MembersService,
+              private router: Router) { }
 
   ngOnInit() {
   }
   ionViewWillEnter() {
-    // console.log('from will enter');
-    this.backButtonSubscription = this.platform.backButton.subscribe(async () => {
-      navigator['app'].exitApp();
+    this.memberService.getMembers().subscribe(res => {
+      this.members = res;
     });
-   }
-
-   ionViewDidLeave() {
-    this.backButtonSubscription.unsubscribe();
    }
 
   viewMeals(memberId: number) {
