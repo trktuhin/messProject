@@ -25,9 +25,19 @@ namespace MessDotCity.API.Data
             _context.Remove(entity);
         }
 
+        public async Task<Member> GetMemberByMemberId(int memberId)
+        {
+            return await _context.Members.FirstOrDefaultAsync(m => m.Id == memberId);
+        }
+
         public async Task<Member> GetMemberByUserId(string userId)
         {
             return await _context.Members.FirstOrDefaultAsync(m => m.UserId == userId);
+        }
+
+        public async Task<Request> GetMemberRequest(string userId, int messId)
+        {
+            return await _context.Requests.FirstOrDefaultAsync(r => r.UserId == userId && r.MessId == messId);
         }
 
         public async Task<IEnumerable<Member>> GetMembersByMessId(int messId)
@@ -48,6 +58,11 @@ namespace MessDotCity.API.Data
         public async Task<MessInfo> GetMessByOwner(string userId)
         {
             return await _context.Messes.FirstOrDefaultAsync(m => m.OwnerId == userId);
+        }
+
+        public async Task<IEnumerable<Request>> GetRequests(int messId)
+        {
+            return await _context.Requests.Where(r => r.MessId == messId).Include(r => r.User).ToListAsync();
         }
 
         public void RemoveMultiple<T>(IEnumerable<T> entities) where T : class

@@ -11,9 +11,12 @@ namespace MessDotCity.API.Data
          void Delete<T>(T entity) where T:class;
          void RemoveMultiple<T>(IEnumerable<T> entities) where T:class;
          Task<MessInfo> GetMessByOwner(string userId);
+         Task<Member> GetMemberByMemberId(int memberId);
          Task<Member> GetMemberByUserId(string userId);
          Task<MessInfo> GetmessByMessId(int messId);
          Task<MessInfo> GetmessByMessName(string messName);
          Task<IEnumerable<Member>> GetMembersByMessId(int messId);
+         Task<Request> GetMemberRequest(string userId, int messId);
+         Task<IEnumerable<Request>> GetRequests(int messId);
     }
 }

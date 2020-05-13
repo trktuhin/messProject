@@ -1,11 +1,12 @@
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Dtos;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using MessDotCity.API.Data.Resource;
+using System.Security.Claims;
 
 namespace MessDotCity.API.Controllers
 {
@@ -16,8 +17,10 @@ namespace MessDotCity.API.Controllers
         private readonly IMapper _mapper;
         private readonly IMessRepository _repo;
         private readonly IUnitOfWork _uow;
-        public MembersController(IMapper mapper, IMessRepository repo, IUnitOfWork uow)
+        private readonly IProfileRepository _proRepo;
+        public MembersController(IMapper mapper, IMessRepository repo, IUnitOfWork uow, IProfileRepository proRepo)
         {
+            _proRepo = proRepo;
             _uow = uow;
             _repo = repo;
             _mapper = mapper;
@@ -35,7 +38,7 @@ namespace MessDotCity.API.Controllers
         [HttpPost("addMember")]
         public async Task<IActionResult> AddMember(MemberCreationDto dto)
         {
-            var messId= 0;
+            var messId = 0;
             try
             {
                 messId = int.Parse(User.FindFirst("MessId").Value);
@@ -44,7 +47,7 @@ namespace MessDotCity.API.Controllers
             {
                 return BadRequest("Don't have any mess to add");
             }
-            if(messId == 0) return BadRequest("Don't have any mess to add");
+            if (messId == 0) return BadRequest("Don't have any mess to add");
             var memberToCreate = _mapper.Map<Member>(dto);
             memberToCreate.LastModifiedOn = DateTime.Now;
             memberToCreate.MessId = messId;
@@ -52,6 +55,102 @@ namespace MessDotCity.API.Controllers
             _repo.Add(memberToCreate);
             await _uow.Complete();
             return Ok(memberToCreate);
+        }
+        [HttpDelete("{memberId}")]
+        public async Task<IActionResult> DeleteMember(int memberId)
+        {
+            var messId = 0;
+            var messRole = "";
+            try
+            {
+                messId = int.Parse(User.FindFirst("MessId").Value);
+                messRole = User.FindFirst("messRole").Value;
+            }
+            catch (System.Exception)
+            {
+                return BadRequest("You don't have permissions to delete this member");
+            }
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if (memberInDb == null) return NotFound();
+            if (memberInDb.MessId != messId | messRole != "admin")
+            {
+                return BadRequest("Don't have permission");
+            }
+            _repo.Delete(memberInDb);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpGet("{memberId}")]
+        public async Task<IActionResult> GetMember(int memberId)
+        {
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if (memberInDb == null) return NotFound();
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            if (memberInDb.MessId != messId) return BadRequest("Not allowed");
+            var memberToReturn = _mapper.Map<MemberResource>(memberInDb);
+            return Ok(memberToReturn);
+        }
+
+        [HttpGet("getRequests")]
+        public async Task<IActionResult> GetRequsets()
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            if (messId == 0) return BadRequest("Don't have any mess");
+            var requests = await _repo.GetRequests(messId);
+            return Ok(requests);
+        }
+
+        [HttpPost("addRequest")]
+        public async Task<IActionResult> AddRequest(AddRequestDto dto)
+        {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var membership = await _repo.GetMemberByUserId(currentUserId);
+            if (membership != null) return BadRequest("You are already in a membership");
+            var mess = await _repo.GetmessByMessName(dto.MessName);
+            if (mess == null) return BadRequest("Mess doesn't exist");
+            if (mess.SecretCode != dto.SecretCode) return BadRequest("Wrong code");
+            var request = await _repo.GetMemberRequest(currentUserId, mess.Id);
+            if (request != null) return BadRequest("Already sent request previously");
+            var requestToCreate = new Request();
+            requestToCreate.MessId = mess.Id;
+            requestToCreate.UserId = currentUserId;
+            requestToCreate.RequestedOn = DateTime.Now;
+            _repo.Add(requestToCreate);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpPost("deleteRequest/{userId}")]
+        public async Task<IActionResult> DeleteRequest(string userId)
+        {
+            // authorization to be added
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var request = await _repo.GetMemberRequest(userId, messId);
+            if (request == null) return BadRequest("Could not find the request");
+            _repo.Delete(request);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpPost("approveRequest/{userId}")]
+        public async Task<IActionResult> ApproveRequest(string userId)
+        {
+            var membership = await _repo.GetMemberByUserId(userId);
+            if (membership != null) return BadRequest("User is already in a membership");
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var request = await _repo.GetMemberRequest(userId, messId);
+            if(request == null) return BadRequest("Did not send a request");
+            var userProfile = _proRepo.GetUserProfileData(userId);
+            if(userProfile == null) return BadRequest("Could not find the user");
+            var memberToCreate = _mapper.Map<Member>(userProfile);
+            memberToCreate.MessId = messId;
+            memberToCreate.MessRole = "member";
+            // adding member and deleting request
+            _repo.Add(memberToCreate);
+            _repo.Delete(request);
+            await _uow.Complete();
+            return Ok();
         }
     }
 }

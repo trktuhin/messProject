@@ -24,7 +24,9 @@ namespace MessDotCity.API.Controllers
         private readonly IUnitOfWork _uow;
         private readonly IHostingEnvironment _env;
         private readonly PhotoSettings _photoSettings;
-        public ProfileController(IMapper mapper, IProfileRepository repo, IUnitOfWork uow, 
+        private readonly IMessRepository _messRepo;
+        public ProfileController(IMapper mapper, IProfileRepository repo, IUnitOfWork uow,
+                                IMessRepository messRepo,
                                 IHostingEnvironment env, IOptionsSnapshot<PhotoSettings> options)
         {
             _env = env;
@@ -32,6 +34,7 @@ namespace MessDotCity.API.Controllers
             _repo = repo;
             _mapper = mapper;
             _photoSettings = options.Value;
+            _messRepo = messRepo;
 
         }
         [HttpGet]
@@ -56,6 +59,15 @@ namespace MessDotCity.API.Controllers
                     return BadRequest("Invalid file type");
                 }
                 await UploadPhoto(dto.Image, profile);
+            }
+            // changing members info
+            var memberInDb = await _messRepo.GetMemberByUserId(currentUserId);
+            if(memberInDb != null)
+            {
+                memberInDb.FirstName = profile.FirstName;
+                memberInDb.LastName = profile.LastName;
+                memberInDb.PhotoName = profile.PhotoUrl;
+                memberInDb.Profession = profile.Profession;
             }
             await _uow.Complete();
             var userResource = _mapper.Map<UserProfileResource>(profile);

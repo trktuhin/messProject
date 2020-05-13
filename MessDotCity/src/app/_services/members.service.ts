@@ -25,8 +25,24 @@ export class MembersService {
     }));
   }
 
+  getMember(id: number) {
+    return this.http.get<MemberInfo>(this.baseUrl + id).pipe(map((value) =>{
+      const member = value;
+      if (member.photoName) {
+        member.photoName = environment.baseImageUrl + member.photoName;
+      } else {
+        member.photoName = environment.baseImageUrl + 'user.jpg';
+      }
+      return member;
+    }));
+  }
+
   addMember(model: any) {
     return this.http.post(this.baseUrl + 'addMember', model);
+  }
+
+  deleteMember(id: number) {
+    return this.http.delete(this.baseUrl + id);
   }
 
 }

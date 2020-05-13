@@ -8,4 +8,5 @@ export interface MemberInfo {
     userId?: number; // nullable
     photoName?: string;
     profession?: string;
+    mobile?: string;
 }

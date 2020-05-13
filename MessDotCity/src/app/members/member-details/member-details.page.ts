@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MemberInfo } from 'src/app/_models/memberInfo';
+import { ActivatedRoute } from '@angular/router';
+import { MembersService } from 'src/app/_services/members.service';
 
 @Component({
   selector: 'app-member-details',
@@ -6,21 +9,20 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./member-details.page.scss'],
 })
 export class MemberDetailsPage implements OnInit {
-  selectedMember = {
-      memberId: 1,
-      firstName: 'Robin',
-      lastName: 'Khan',
-      photoUrl: 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80',
-      userId: 1,
-      mobile: '01677048891',
-      email: 'robinkhantuhin404@gmail.com',
-      profession: 'Engineer'
-  };
+  selectedMember: MemberInfo;
 
-  constructor() { }
+  constructor(private route: ActivatedRoute, private memberService: MembersService) { }
 
   ngOnInit() {
-    // get the selected member from member id in the route
+  }
+
+  ionViewWillEnter() {
+    this.route.paramMap.subscribe(params => {
+      const memberId = +params.get('memberId');
+      this.memberService.getMember(memberId).subscribe(res => {
+        this.selectedMember = res;
+      }, err => console.log(err));
+    });
   }
 
 }

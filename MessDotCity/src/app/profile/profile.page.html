@@ -17,7 +17,7 @@
   <ion-grid>
     <ion-row>
       <ion-col size-sm="6" offset-sm="3">
-        <ion-card>
+        <ion-card class="card">
           <ion-card-header>
             <ion-card-subtitle>Profile of</ion-card-subtitle>
             <ion-card-title>{{profileForm.get('firstName').value}}</ion-card-title>
@@ -46,6 +46,10 @@
             <ion-item class="form-group">
               <ion-label position="floating" color="medium">Email</ion-label>
               <ion-input type="email" autocomplete="off" formControlName="emailAddress"></ion-input>
+            </ion-item>
+            <ion-item class="form-group">
+              <ion-label position="floating" color="medium">Profession</ion-label>
+              <ion-input type="text" autocomplete="off" formControlName="profession"></ion-input>
             </ion-item>
           </div>
           </ion-card-content>

@@ -50,6 +50,9 @@ export class MembersPage implements OnInit {
   ngOnInit() {
   }
   ionViewWillEnter() {
+    this.memberInitialize();
+   }
+   memberInitialize() {
     this.memberService.getMembers().subscribe(res => {
       this.members = res;
     });
@@ -152,12 +155,15 @@ export class MembersPage implements OnInit {
           text: 'Confirm',
           cssClass: 'btn-primary',
           handler: () => {
-            // call service method to delete request
-            this.toastCtrl.create({
-                message: 'Result message from the server',
+            this.memberService.deleteMember(id).subscribe(() => {
+              this.memberInitialize();
+              // showing toast
+              this.toastCtrl.create({
+                message: 'Deleted member successfully',
                 duration: 2000,
                 color: 'danger'
             }).then(el => el.present());
+            }, err => console.log(err));
           }
         }
       ]

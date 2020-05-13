@@ -54,7 +54,8 @@ export class ProfilePage implements OnInit {
       this.profileForm.patchValue({
         firstName: res.firstName,
         lastName: res.lastName,
-        emailAddress: res.email
+        emailAddress: res.email,
+        profession: res.profession
       });
       if (res.photoUrl) {
         this.selectedImageUrl = environment.baseImageUrl + res.photoUrl;
@@ -69,6 +70,7 @@ export class ProfilePage implements OnInit {
       firstName: ['Robin', [Validators.required]],
       lastName: ['Khan', [Validators.required]],
       emailAddress: ['robinkhantuhin404@gmail.com', [Validators.required, Validators.email]],
+      profession: [''],
       image: [null]
     });
   }
@@ -129,6 +131,7 @@ export class ProfilePage implements OnInit {
     model.append('lastName', this.profileForm.get('lastName').value);
     model.append('email', this.profileForm.get('emailAddress').value);
     model.append('image', this.profileForm.get('image').value);
+    model.append('profession', this.profileForm.get('profession').value);
 
     this.profleService.editProfileInfo(model).subscribe(res => {
       const user: any = res;
