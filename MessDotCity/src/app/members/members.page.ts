@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { SegmentChangeEventDetail } from '@ionic/core';
-import { ModalController, ToastController, AlertController, Platform } from '@ionic/angular';
+import { ModalController, ToastController, AlertController, Platform, LoadingController } from '@ionic/angular';
 import { ReplaceMemberComponent } from './replace-member/replace-member.component';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
 import { MembersService } from '../_services/members.service';
 import { MemberInfo } from '../_models/memberInfo';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-members',
@@ -15,48 +16,47 @@ export class MembersPage implements OnInit {
   selectedSegment = 'members';
   members: MemberInfo[] = [];
 
-  requests = [
-    {
-      requestId: 1,
-      firstName: 'John',
-      lastName: 'Abraham',
-      photoUrl: 'https://images-na.ssl-images-amazon.com/images/I/71YqPv%2BaG7L._SL1500_.jpg',
-      userId: 1,
-      mobile: '01677048891'
-    },
-    {
-      requestId: 2,
-      firstName: 'John',
-      lastName: 'Cuttler',
-      photoUrl: 'https://www.facemama.com/wp-content/uploads/2012/10/boy-con-lentes-514x342.jpg',
-      userId: 1,
-      mobile: '01677048892'
-    },
-    {
-      requestId: 3,
-      firstName: 'John',
-      lastName: 'Wick',
-      photoUrl: 'https://i.pinimg.com/originals/0d/0f/08/0d0f0898e1deb1ffce7ad53db8ba4e99.jpg',
-      userId: 1,
-      mobile: '01677048893'
-    }
-  ];
+  requests = [];
   constructor(private modalCtrl: ModalController,
               private toastCtrl: ToastController,
               private alertCtrl: AlertController,
               private memberService: MembersService,
-              private router: Router) { }
+              private router: Router,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
   }
   ionViewWillEnter() {
     this.memberInitialize();
-   }
-   memberInitialize() {
+    this.requestInitialize();
+  }
+  memberInitialize() {
     this.memberService.getMembers().subscribe(res => {
       this.members = res;
+    }, err => {
+      console.log(err);
     });
-   }
+  }
+
+  requestInitialize() {
+    // this.loadingCtrl.create().then(el => el.present());
+    this.memberService.getMemberRequests().subscribe(res => {
+      const reqs = res;
+      this.requests = [];
+      reqs.forEach(element => {
+        if (element.user.photoUrl) {
+          element.user.photoUrl = environment.baseImageUrl + element.user.photoUrl;
+        } else {
+          element.user.photoUrl = environment.baseImageUrl + 'user.jpg';
+        }
+        this.requests.push(element.user);
+        // this.loadingCtrl.dismiss();
+      });
+    }, err => {
+      console.log(err);
+      // this.loadingCtrl.dismiss();
+    });
+  }
 
   viewMeals(memberId: number) {
     this.router.navigate(['/members/2/view-meals']);
@@ -103,12 +103,16 @@ export class MembersPage implements OnInit {
         {
           text: 'Confirm',
           handler: () => {
-            // call service method
-            this.toastCtrl.create({
-                message: 'Result message from the server',
+            this.memberService.approveNewRequest(user.userId).subscribe(res => {
+              this.toastCtrl.create({
+                message: 'New member added',
                 duration: 2000,
                 color: 'success'
-            }).then(el => el.present());
+              }).then(el => el.present());
+              this.memberInitialize();
+              this.requestInitialize();
+              this.selectedSegment = 'members';
+            }, err => console.log(err));
           }
         }
       ]
@@ -131,9 +135,9 @@ export class MembersPage implements OnInit {
           handler: () => {
             // call service method to delete request
             this.toastCtrl.create({
-                message: 'Result message from the server',
-                duration: 2000,
-                color: 'danger'
+              message: 'Result message from the server',
+              duration: 2000,
+              color: 'danger'
             }).then(el => el.present());
           }
         }
@@ -162,7 +166,7 @@ export class MembersPage implements OnInit {
                 message: 'Deleted member successfully',
                 duration: 2000,
                 color: 'danger'
-            }).then(el => el.present());
+              }).then(el => el.present());
             }, err => console.log(err));
           }
         }

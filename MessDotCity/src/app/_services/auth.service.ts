@@ -4,18 +4,23 @@ import { map } from 'rxjs/operators';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from 'src/environments/environment';
 import { BehaviorSubject } from 'rxjs';
+import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
+import * as signalR from '@aspnet/signalr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   baseUrl = environment.apiUrl + 'auth/';
+  tokenConnection: HubConnection;
   decodedToken: any;
   currentUser: any;
   messName = new BehaviorSubject<string>('');
+  token = new BehaviorSubject<string>('');
   photoUrl = new BehaviorSubject<string>(environment.baseImageUrl + '/user.jpg');
   currentPhotoUrl = this.photoUrl.asObservable();
   currentMessName = this.messName.asObservable();
+  currentToken = this.token.asObservable();
   jwtHelper = new JwtHelperService();
   get IsLoggedIn() {
     let result = false;
@@ -49,11 +54,15 @@ export class AuthService {
           localStorage.setItem('user', JSON.stringify(user.user));
           localStorage.setItem('messName', user.messName);
           this.decodedToken = this.jwtHelper.decodeToken(user.token);
+          localStorage.setItem('nameid', this.decodedToken.nameid);
           if (user.user) {
             this.currentUser = user.user;
             this.changeProfilePhoto(this.currentUser.photoUrl);
             this.changeMessName(user.messName);
           }
+
+          // opening token connection
+          this.openTokenConnection();
         }
       })
     );
@@ -63,6 +72,8 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('messName');
+    localStorage.removeItem('nameid');
+    this.tokenConnection.stop();
   }
 
   register(model: any) {
@@ -71,5 +82,26 @@ export class AuthService {
         // console.log(res);
       })
     );
+  }
+
+  openTokenConnection() {
+    const username = localStorage.getItem('nameid');
+    if (username === null) {
+      console.log('not logged in');
+      return;
+    }
+    this.tokenConnection = new HubConnectionBuilder().configureLogging(signalR.LogLevel.Debug)
+    .withUrl('http://localhost:5000/tokenUpdate?username=' + username, {
+      skipNegotiation: true,
+      transport: signalR.HttpTransportType.WebSockets
+    })
+    .build();
+    this.tokenConnection.start().then(() => {
+      this.tokenConnection.on('ReceiveToken', obj => {
+        localStorage.setItem('token', obj.token);
+        localStorage.setItem('messName', obj.messName);
+        this.token.next(obj.token);
+      });
+    });
   }
 }

@@ -7,6 +7,9 @@ using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Mvc;
 using MessDotCity.API.Data.Resource;
 using System.Security.Claims;
+using Microsoft.AspNetCore.SignalR;
+using MessDotCity.API.Hubs;
+using MessDotCity.API.Helpers;
 
 namespace MessDotCity.API.Controllers
 {
@@ -18,12 +21,19 @@ namespace MessDotCity.API.Controllers
         private readonly IMessRepository _repo;
         private readonly IUnitOfWork _uow;
         private readonly IProfileRepository _proRepo;
-        public MembersController(IMapper mapper, IMessRepository repo, IUnitOfWork uow, IProfileRepository proRepo)
+        private readonly IHubContext<TokenHub> _tokenHubContext;
+        private readonly ICommonMethods _cms;
+        public MembersController(IMapper mapper, IMessRepository repo, IUnitOfWork uow,
+                                IProfileRepository proRepo,
+                                IHubContext<TokenHub> tokenHubContext,
+                                ICommonMethods cms)
         {
+            _tokenHubContext = tokenHubContext;
             _proRepo = proRepo;
             _uow = uow;
             _repo = repo;
             _mapper = mapper;
+            _cms = cms;
 
         }
 
@@ -54,6 +64,8 @@ namespace MessDotCity.API.Controllers
             memberToCreate.MessRole = "member";
             _repo.Add(memberToCreate);
             await _uow.Complete();
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // await _tokenHubContext.Clients.Group(currentUserId).SendAsync("ReceiveToken", memberToCreate);
             return Ok(memberToCreate);
         }
         [HttpDelete("{memberId}")]
@@ -121,6 +133,16 @@ namespace MessDotCity.API.Controllers
             return Ok();
         }
 
+        public async Task BroadCastUpdatedToken(string userId)
+        {
+            var updatedToken = await _cms.GetUpdatedToken(userId);
+            var messName = await _cms.GetMessName(userId);
+            await _tokenHubContext.Clients.Group(userId).SendAsync("ReceiveToken", new {
+                token = updatedToken,
+                messName = messName
+            });
+        }
+
         [HttpPost("deleteRequest/{userId}")]
         public async Task<IActionResult> DeleteRequest(string userId)
         {
@@ -141,7 +163,7 @@ namespace MessDotCity.API.Controllers
             var messId = int.Parse(User.FindFirst("MessId").Value);
             var request = await _repo.GetMemberRequest(userId, messId);
             if(request == null) return BadRequest("Did not send a request");
-            var userProfile = _proRepo.GetUserProfileData(userId);
+            var userProfile = await _proRepo.GetUserProfileData(userId);
             if(userProfile == null) return BadRequest("Could not find the user");
             var memberToCreate = _mapper.Map<Member>(userProfile);
             memberToCreate.MessId = messId;
@@ -150,6 +172,7 @@ namespace MessDotCity.API.Controllers
             _repo.Add(memberToCreate);
             _repo.Delete(request);
             await _uow.Complete();
+            await BroadCastUpdatedToken(userId);
             return Ok();
         }
     }

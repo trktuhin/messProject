@@ -4,6 +4,8 @@ import { MessService } from '../_services/mess.service';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
+import { SegmentChangeEventDetail } from '@ionic/core';
+import { MembersService } from '../_services/members.service';
 
 @Component({
   selector: 'app-create-mess',
@@ -12,11 +14,17 @@ import { ToastController } from '@ionic/angular';
 })
 export class CreateMessPage implements OnInit {
   messForm: FormGroup;
+  joinMessForm = {
+    messName: '',
+    secretCode: ''
+  };
+  selectedSegment = 'create-mess';
   constructor(private fb: FormBuilder,
-    private messService: MessService,
-    private authService: AuthService,
-    private toastCtrl: ToastController,
-    private router: Router) { }
+              private messService: MessService,
+              private authService: AuthService,
+              private toastCtrl: ToastController,
+              private router: Router,
+              private memberService: MembersService) { }
 
   ngOnInit() {
     this.createmessForm();
@@ -33,6 +41,16 @@ export class CreateMessPage implements OnInit {
     }, {
       validators: [this.updateTimeValidator, this.messNameValidator, this.secretCodeValidator]
     });
+  }
+
+  SendRequest() {
+    this.memberService.sendMemberRequest(this.joinMessForm).subscribe(res => {
+      console.log('Sent request');
+    }, err => console.log(err));
+  }
+
+  onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {
+    this.selectedSegment = event.detail.value;
   }
 
   createMess() {

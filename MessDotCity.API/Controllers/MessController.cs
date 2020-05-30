@@ -5,8 +5,10 @@ using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Dtos;
+using MessDotCity.API.Hubs;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace MessDotCity.API.Controllers
 {
@@ -16,14 +18,19 @@ namespace MessDotCity.API.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IMessRepository _repo;
+        private readonly IHubContext<TokenHub> _tokenHubContext;
         private readonly IUnitOfWork _uow;
         private readonly IProfileRepository _proRepo;
-        public MessController(IMapper mapper, IMessRepository repo, IUnitOfWork uow, IProfileRepository proRepo)
+        public MessController(IMapper mapper, IMessRepository repo,
+                            IUnitOfWork uow,
+                            IProfileRepository proRepo
+                            ,IHubContext<TokenHub> tokenHubContext)
         {
             _proRepo = proRepo;
             _uow = uow;
             _repo = repo;
             _mapper = mapper;
+            _tokenHubContext = tokenHubContext;
 
         }
 
@@ -74,6 +81,7 @@ namespace MessDotCity.API.Controllers
             await _uow.Complete();
             return Ok();
         }
+
 
         [HttpPost("deleteMess")]
         public async Task<IActionResult> DeleteMess()

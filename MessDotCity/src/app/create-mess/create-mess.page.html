@@ -4,7 +4,7 @@
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
     <ion-title>Create Mess</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons slot="primary" *ngIf="selectedSegment == 'create-mess'">
       <ion-button [disabled]="!messForm.valid" (click)="createMess()">
         <ion-icon name="checkmark" slot="icon-only"></ion-icon>
       </ion-button>
@@ -13,36 +13,50 @@
 </ion-header>
 
 <ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-segment value="create-mess" (ionChange)="onFilterUpdate($event)">
+          <ion-segment-button value="create-mess">
+            <ion-label>Create Mess</ion-label>
+          </ion-segment-button>
+
+          <ion-segment-button value="join-mess">
+            <ion-label>Join Mess</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
   <div class="row h-80p">
-    <div class="col align-self-center">
+    <div class="col align-self-center" *ngIf="selectedSegment==='create-mess'">
       <ion-list [formGroup]="messForm">
         <ion-item class="form-group w-300px mx-auto">
           <ion-label position="floating" color="medium">Mess Name (No whitespace)</ion-label>
-          <ion-input type="text" autocomplete="off" formControlName="messName"
-          [ngClass]="{
+          <ion-input type="text" autocomplete="off" formControlName="messName" [ngClass]="{
             'ng-invalid':
             messForm.get('messName').touched &&
               messForm.hasError('whiteSpaceName')
           }"></ion-input>
         </ion-item>
         <ion-item class="form-group w-300px mx-auto">
-          <ion-label position="floating" color="medium" >Location</ion-label>
+          <ion-label position="floating" color="medium">Location</ion-label>
           <ion-input type="text" autocomplete="off" formControlName="location"></ion-input>
         </ion-item>
         <ion-item class="form-group w-300px mx-auto">
-          <ion-label position="floating" color="medium" >Update Time From</ion-label>
+          <ion-label position="floating" color="medium">Update Time From</ion-label>
           <ion-datetime displayFormat="h:mm a" formControlName="updateFrom"></ion-datetime>
         </ion-item>
         <ion-item class="form-group w-300px mx-auto">
-          <ion-label position="floating" color="medium" >Update Time To</ion-label>
+          <ion-label position="floating" color="medium">Update Time To</ion-label>
           <ion-datetime displayFormat="h:mm a" formControlName="updateTo"></ion-datetime>
           <ion-text *ngIf="messForm.get('updateTo').touched &&
           messForm.hasError('timeInvalid')" class="text-danger sm-2">Update to must be greater</ion-text>
         </ion-item>
         <ion-item class="form-group w-300px mx-auto">
-          <ion-label position="floating" color="medium" >Secret Code (4 characters)</ion-label>
-          <ion-input type="text" autocomplete="off" formControlName="secretCode"
-          [ngClass]="{
+          <ion-label position="floating" color="medium">Secret Code (4 characters)</ion-label>
+          <ion-input type="text" maxlength="4" autocomplete="off" formControlName="secretCode" [ngClass]="{
             'ng-invalid':
             messForm.get('secretCode').touched &&
               messForm.hasError('whiteSpaceCode')
@@ -53,6 +67,21 @@
           <ion-checkbox disabled color="primary" slot="end" checked="true"></ion-checkbox>
         </ion-item>
       </ion-list>
+    </div>
+    <div class="col align-self-center" *ngIf="selectedSegment==='join-mess'">
+      <form #JoinMessForm="ngForm" (ngSubmit)="SendRequest()">
+        <ion-list>
+          <ion-item class="form-group w-300px mx-auto">
+            <ion-label position="floating" color="medium">Mess Name</ion-label>
+            <ion-input required type="text" name="messName" [(ngModel)]="joinMessForm.messName"></ion-input>
+          </ion-item>
+          <ion-item class="form-group w-300px mx-auto">
+            <ion-label position="floating" color="medium">Secret Code (4 characters)</ion-label>
+            <ion-input minlength="4" maxlength="4" required type="text" name="secretCode" [(ngModel)]="joinMessForm.secretCode"></ion-input>
+          </ion-item>
+          <ion-button [disabled]="!JoinMessForm.valid" type="submit" color="dark" expand="block" class="w-300px mx-auto">Send Request</ion-button>
+        </ion-list>
+      </form>
     </div>
   </div>
 </ion-content>

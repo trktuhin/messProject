@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Helpers;
+using MessDotCity.API.Hubs;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -33,11 +34,13 @@ namespace MessDotCity.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
             services.AddAutoMapper();
+            services.AddSignalR();
             services.Configure<PhotoSettings>(Configuration.GetSection("PhotoSettings"));
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IProfileRepository,ProfileRepository>();
             services.AddScoped<IMessRepository,MessRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICommonMethods, CommonMethods>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options => {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -73,6 +76,9 @@ namespace MessDotCity.API
                 // app.UseHsts();
             }
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseSignalR(routes => {
+               routes.MapHub<TokenHub>("/tokenUpdate"); 
+            });
             app.UseAuthentication();
             // app.UseHttpsRedirection();
             app.UseMvc();

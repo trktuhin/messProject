@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Platform, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -57,25 +56,19 @@ export class AppComponent implements OnInit {
       this.splashScreen.hide();
     });
   }
-  setMessName() {
+  setMessNameAndSideMenu() {
+    // console.log('From SETMESSNAMEANDSJIDEMENU')
     const messName = localStorage.getItem('messName');
     this.authService.changeMessName(messName);
     // subscribing to messname
     this.authService.currentMessName.subscribe(mess => {
       this.messName = mess;
+      let messRole = '';
+      if (this.authService.decodedToken) {
+        messRole = this.authService.decodedToken.messRole;
+      }
+      // console.log(messRole);
       if (this.messName) {
-        this.appPages = [
-          {
-            title: 'Update Mess',
-            url: '/update-mess',
-            icon: 'grid'
-          },
-          {
-            title: 'Visit Anonymously',
-            url: '/visit',
-            icon: 'skull'
-          }
-        ];
         this.memberNav = [{
           title: 'Dashboard',
           url: '/dashboard',
@@ -126,6 +119,20 @@ export class AppComponent implements OnInit {
         ];
         this.memberNav = [];
       }
+      if (this.messName && messRole === 'admin') {
+        this.appPages = [
+          {
+            title: 'Update Mess',
+            url: '/update-mess',
+            icon: 'grid'
+          },
+          {
+            title: 'Visit Anonymously',
+            url: '/visit',
+            icon: 'skull'
+          }
+        ];
+      }
     });
   }
 
@@ -134,7 +141,10 @@ export class AppComponent implements OnInit {
     if (path !== undefined) {
       this.selectedIndex = this.appPages.findIndex(page => page.title.toLowerCase() === path.toLowerCase());
     }
-    this.authService.currentPhotoUrl.subscribe(photoUrl => this.photoUrl = photoUrl);
+    this.authService.currentPhotoUrl.subscribe(photoUrl => {
+      this.photoUrl = photoUrl;
+      // this.setMessNameAndSideMenu();
+    });
     const token = localStorage.getItem('token');
     if (token) {
       this.authService.decodedToken = this.jwtHelper.decodeToken(token);
@@ -144,7 +154,11 @@ export class AppComponent implements OnInit {
       this.authService.currentUser = user;
       this.authService.changeProfilePhoto(user.photoUrl);
     }
-    this.setMessName();
+    this.authService.openTokenConnection();
+    this.setMessNameAndSideMenu();
+    this.authService.currentToken.subscribe(() => {
+      this.setMessNameAndSideMenu();
+    });
   }
 
   logout() {

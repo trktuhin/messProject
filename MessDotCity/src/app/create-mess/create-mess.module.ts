@@ -13,6 +13,7 @@ import { CreateMessPage } from './create-mess.page';
     CommonModule,
     ReactiveFormsModule,
     IonicModule,
+    FormsModule,
     CreateMessPageRoutingModule
   ],
   declarations: [CreateMessPage]

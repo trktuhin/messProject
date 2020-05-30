@@ -26,7 +26,7 @@ export class MembersService {
   }
 
   getMember(id: number) {
-    return this.http.get<MemberInfo>(this.baseUrl + id).pipe(map((value) =>{
+    return this.http.get<MemberInfo>(this.baseUrl + id).pipe(map((value) => {
       const member = value;
       if (member.photoName) {
         member.photoName = environment.baseImageUrl + member.photoName;
@@ -43,6 +43,18 @@ export class MembersService {
 
   deleteMember(id: number) {
     return this.http.delete(this.baseUrl + id);
+  }
+
+  approveNewRequest(userId: string) {
+    return this.http.post(this.baseUrl + 'approveRequest/' + userId, {});
+  }
+
+  sendMemberRequest(model: any) {
+    return this.http.post(this.baseUrl + 'addRequest', model);
+  }
+
+  getMemberRequests() {
+    return this.http.get<any[]>(this.baseUrl + 'getRequests');
   }
 
 }
