@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MembersService } from '../_services/members.service';
 import { MemberInfo } from '../_models/memberInfo';
 import { environment } from 'src/environments/environment';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-members',
@@ -22,9 +23,13 @@ export class MembersPage implements OnInit {
               private alertCtrl: AlertController,
               private memberService: MembersService,
               private router: Router,
+              private authService: AuthService,
               private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
+    this.authService.currentRequests.subscribe(() => {
+      this.requestInitialize();
+    });
   }
   ionViewWillEnter() {
     this.memberInitialize();
@@ -71,7 +76,9 @@ export class MembersPage implements OnInit {
   }
 
   replaceMemberModal(user: any) {
-    this.modalCtrl.create({ component: ReplaceMemberComponent, componentProps: { selectedwUser: user } }).then(el => {
+    this.modalCtrl.create({ component: ReplaceMemberComponent,
+      componentProps: { selectedwUser: user, members: this.members } })
+      .then(el => {
       el.present();
       return el.onDidDismiss();
     }).then(resultData => {
@@ -80,6 +87,18 @@ export class MembersPage implements OnInit {
           message: resultData.data.message,
           duration: 2000,
           color: 'success'
+        }).then(el => {
+          el.present();
+          // initialize the members and requests list
+          this.memberInitialize();
+          this.requestInitialize();
+          this.selectedSegment = 'members';
+        });
+      } else {
+        this.toastCtrl.create({
+          message: resultData.data.message,
+          duration: 2000,
+          color: 'danger'
         }).then(el => {
           el.present();
           // initialize the members list

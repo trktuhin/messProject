@@ -90,6 +90,10 @@ namespace MessDotCity.API.Controllers
             }
             _repo.Delete(memberInDb);
             await _uow.Complete();
+            if(memberInDb.UserId != null)
+            {
+                await BroadCastUpdatedToken(memberInDb.UserId);
+            }
             return Ok();
         }
 
@@ -130,7 +134,13 @@ namespace MessDotCity.API.Controllers
             requestToCreate.RequestedOn = DateTime.Now;
             _repo.Add(requestToCreate);
             await _uow.Complete();
+            await BroadCastMemberRequest(mess.OwnerId, currentUserId);
             return Ok();
+        }
+
+        public async Task BroadCastMemberRequest(string userId, string memberUserId)
+        {
+            await _tokenHubContext.Clients.Group(userId).SendAsync("ReceiveRequest", memberUserId);
         }
 
         public async Task BroadCastUpdatedToken(string userId)
@@ -173,6 +183,35 @@ namespace MessDotCity.API.Controllers
             _repo.Delete(request);
             await _uow.Complete();
             await BroadCastUpdatedToken(userId);
+            return Ok();
+        }
+        [HttpPost("replaceMember")]
+        public async Task<IActionResult> ReplaceMember([FromBody]ReplaceMemberDto dto)
+        {
+            var membership = await _repo.GetMemberByUserId(dto.UserId);
+            if (membership != null) return BadRequest("User is already in a membership");
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var request = await _repo.GetMemberRequest(dto.UserId, messId);
+            if(request == null) return BadRequest("Did not send a request");
+            var userProfile = await _proRepo.GetUserProfileData(dto.UserId);
+            if(userProfile == null) return BadRequest("Could not find the user");
+            // checking existing memberId
+            var member = await _repo.GetMemberByMemberId(dto.MemberId);
+            if(member == null) return BadRequest("Invalid member");
+            if(member.MessRole.ToLower() == "admin") return BadRequest("Can't replace admin");
+
+            var memberToCreate = _mapper.Map<Member>(userProfile);
+            member.FirstName = memberToCreate.FirstName;
+            member.LastName = memberToCreate.LastName;
+            member.LastModifiedOn = DateTime.Now;
+            member.Mobile = memberToCreate.Mobile;
+            member.UserId = memberToCreate.UserId;
+            member.Profession = memberToCreate.Profession;
+            member.PhotoName = memberToCreate.PhotoName;
+            // deleting request
+            _repo.Delete(request);
+            await _uow.Complete();
+            await BroadCastUpdatedToken(dto.UserId);
             return Ok();
         }
     }

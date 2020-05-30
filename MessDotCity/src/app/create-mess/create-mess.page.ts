@@ -45,8 +45,19 @@ export class CreateMessPage implements OnInit {
 
   SendRequest() {
     this.memberService.sendMemberRequest(this.joinMessForm).subscribe(res => {
-      console.log('Sent request');
-    }, err => console.log(err));
+      // console.log('Sent request');
+      this.toastCtrl.create({
+        message: 'Request sent',
+        duration: 200,
+        color: 'success'
+      }).then(el => el.present());
+    }, err => {
+      this.toastCtrl.create({
+        message: err,
+        duration: 200,
+        color: 'danger'
+      }).then(el => el.present());
+    });
   }
 
   onFilterUpdate(event: CustomEvent<SegmentChangeEventDetail>) {

@@ -17,18 +17,13 @@
     <ion-row>
       <ion-col>
         <ion-select placeholder="Select One" name="replaceUser" [(ngModel)]="replacedMemberId">
-          <ion-select-option value="1">Dipu Rana</ion-select-option>
-          <ion-select-option value="2">Imran Uddin</ion-select-option>
-          <ion-select-option value="3">Rasel Rabbaney</ion-select-option>
-          <ion-select-option value="4">Lucifer Grenn</ion-select-option>
-          <ion-select-option value="5">Robin Khan</ion-select-option> 
-          <ion-select-option value="6">Sharif Khan</ion-select-option> 
+          <ion-select-option *ngFor="let member of members" [value]="member.id">{{member.firstName}} {{member.lastName}}</ion-select-option>
         </ion-select>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="6" offset="3" class="text-center">
-        <ion-button color="warning" [disabled]="replacedMemberId===0" (click)="onReplace()">Replace</ion-button>
+        <ion-button color="warning" [disabled]="!replacedMemberId || replacedMemberId === 0" (click)="onReplace()">Replace</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

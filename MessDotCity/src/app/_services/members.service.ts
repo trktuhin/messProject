@@ -57,4 +57,8 @@ export class MembersService {
     return this.http.get<any[]>(this.baseUrl + 'getRequests');
   }
 
+  replaceMember(model: any) {
+    return this.http.post(this.baseUrl + 'replaceMember', model);
+  }
+
 }

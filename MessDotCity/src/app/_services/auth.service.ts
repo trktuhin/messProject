@@ -17,9 +17,11 @@ export class AuthService {
   currentUser: any;
   messName = new BehaviorSubject<string>('');
   token = new BehaviorSubject<string>('');
+  memberRequest = new BehaviorSubject<string>('');
   photoUrl = new BehaviorSubject<string>(environment.baseImageUrl + '/user.jpg');
   currentPhotoUrl = this.photoUrl.asObservable();
   currentMessName = this.messName.asObservable();
+  currentRequests = this.memberRequest.asObservable();
   currentToken = this.token.asObservable();
   jwtHelper = new JwtHelperService();
   get IsLoggedIn() {
@@ -97,10 +99,16 @@ export class AuthService {
     })
     .build();
     this.tokenConnection.start().then(() => {
+      // new token receive event
       this.tokenConnection.on('ReceiveToken', obj => {
         localStorage.setItem('token', obj.token);
         localStorage.setItem('messName', obj.messName);
         this.token.next(obj.token);
+      });
+
+      // new member request receive event
+      this.tokenConnection.on('ReceiveRequest', data => {
+        this.memberRequest.next(data);
       });
     });
   }
