@@ -59,7 +59,9 @@ export class AuthService {
           localStorage.setItem('nameid', this.decodedToken.nameid);
           if (user.user) {
             this.currentUser = user.user;
-            this.changeProfilePhoto(this.currentUser.photoUrl);
+            if (this.currentUser.photoUrl) {
+              this.changeProfilePhoto(this.currentUser.photoUrl);
+            }
             this.changeMessName(user.messName);
           }
 
@@ -102,6 +104,9 @@ export class AuthService {
       // new token receive event
       this.tokenConnection.on('ReceiveToken', obj => {
         localStorage.setItem('token', obj.token);
+        // setting decoded token
+        this.decodedToken = this.jwtHelper.decodeToken(obj.token);
+
         localStorage.setItem('messName', obj.messName);
         this.token.next(obj.token);
       });
@@ -111,5 +116,13 @@ export class AuthService {
         this.memberRequest.next(data);
       });
     });
+  }
+
+  isAdmin() {
+    const role = this.decodedToken.messRole;
+    if ((role as string).toLowerCase() === 'admin') {
+      return true;
+    }
+    return false;
   }
 }

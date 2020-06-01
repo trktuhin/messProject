@@ -31,7 +31,9 @@
               <ion-label>
                 <ion-icon slot="start" name="restaurant-outline"></ion-icon>
                  {{selectedMember?.dBreakfast}}+{{selectedMember?.dLunch}}+{{selectedMember?.dDinner}} 
-                 <span button class="btn btn-sm btn-warning">Change</span>
+                 <span button class="btn btn-sm btn-warning" *ngIf='ownMembership()' (click)="onEditMember()">Change</span>
+                 <span button class="btn btn-sm btn-warning" *ngIf='isManualMember() && isAdmin()' (click)="onEditMember()">Edit Member</span>
+                 <span button class="btn btn-sm btn-danger ml-2" *ngIf='ownMembership() && !isAdmin()' (click)="deleteMembership()">Remove Membership</span>
                 </ion-label>
             </ion-item>
           </div>

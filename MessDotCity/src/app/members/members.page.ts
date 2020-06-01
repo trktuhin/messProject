@@ -23,7 +23,7 @@ export class MembersPage implements OnInit {
               private alertCtrl: AlertController,
               private memberService: MembersService,
               private router: Router,
-              private authService: AuthService,
+              public authService: AuthService,
               private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
@@ -38,6 +38,7 @@ export class MembersPage implements OnInit {
   memberInitialize() {
     this.memberService.getMembers().subscribe(res => {
       this.members = res;
+      // console.log(this.members);
     }, err => {
       console.log(err);
     });

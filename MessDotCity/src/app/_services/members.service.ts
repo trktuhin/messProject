@@ -60,5 +60,11 @@ export class MembersService {
   replaceMember(model: any) {
     return this.http.post(this.baseUrl + 'replaceMember', model);
   }
+  deleteMembership(id: number) {
+    return this.http.delete(this.baseUrl + 'deleteMembership/' + id);
+  }
 
+  editMember(model: any) {
+    return this.http.post(this.baseUrl + 'EditMember', model);
+  }
 }

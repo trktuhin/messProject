@@ -60,6 +60,10 @@ namespace MessDotCity.API.Controllers
             var messName = await _cms.GetMessName(userFromRepo.UserId);
             // getting user object
             var userResource = _mapper.Map<UserProfileResource>(userFromRepo);
+            if(userResource.PhotoUrl == null)
+            {
+                userResource.PhotoUrl = "user.jpg";
+            }
             return Ok(new
             {
                 token = token,

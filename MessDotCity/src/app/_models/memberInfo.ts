@@ -5,7 +5,7 @@ export interface MemberInfo {
     dBreakfast?: number; // d for default
     dLunch?: number;
     dDinner?: number;
-    userId?: number; // nullable
+    userId?: string; // nullable
     photoName?: string;
     profession?: string;
     mobile?: string;

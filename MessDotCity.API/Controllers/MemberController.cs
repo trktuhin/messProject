@@ -58,13 +58,17 @@ namespace MessDotCity.API.Controllers
                 return BadRequest("Don't have any mess to add");
             }
             if (messId == 0) return BadRequest("Don't have any mess to add");
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
             var memberToCreate = _mapper.Map<Member>(dto);
             memberToCreate.LastModifiedOn = DateTime.Now;
             memberToCreate.MessId = messId;
             memberToCreate.MessRole = "member";
             _repo.Add(memberToCreate);
             await _uow.Complete();
-            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            // var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             // await _tokenHubContext.Clients.Group(currentUserId).SendAsync("ReceiveToken", memberToCreate);
             return Ok(memberToCreate);
         }
@@ -84,10 +88,15 @@ namespace MessDotCity.API.Controllers
             }
             var memberInDb = await _repo.GetMemberByMemberId(memberId);
             if (memberInDb == null) return NotFound();
-            if (memberInDb.MessId != messId | messRole != "admin")
+            if (memberInDb.MessId != messId || messRole != "admin")
             {
-                return BadRequest("Don't have permission");
+                return BadRequest("Not allowed");
             }
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != memberInDb.MessId) return Unauthorized();
+
             _repo.Delete(memberInDb);
             await _uow.Complete();
             if(memberInDb.UserId != null)
@@ -156,10 +165,15 @@ namespace MessDotCity.API.Controllers
         [HttpPost("deleteRequest/{userId}")]
         public async Task<IActionResult> DeleteRequest(string userId)
         {
-            // authorization to be added
             var messId = int.Parse(User.FindFirst("MessId").Value);
             var request = await _repo.GetMemberRequest(userId, messId);
             if (request == null) return BadRequest("Could not find the request");
+
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            
             _repo.Delete(request);
             await _uow.Complete();
             return Ok();
@@ -175,6 +189,11 @@ namespace MessDotCity.API.Controllers
             if(request == null) return BadRequest("Did not send a request");
             var userProfile = await _proRepo.GetUserProfileData(userId);
             if(userProfile == null) return BadRequest("Could not find the user");
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
             var memberToCreate = _mapper.Map<Member>(userProfile);
             memberToCreate.MessId = messId;
             memberToCreate.MessRole = "member";
@@ -212,6 +231,45 @@ namespace MessDotCity.API.Controllers
             _repo.Delete(request);
             await _uow.Complete();
             await BroadCastUpdatedToken(dto.UserId);
+            return Ok();
+        }
+        [HttpDelete("deleteMembership/{memberId}")]
+        public async Task<IActionResult> DeleteOwnMembership(int memberId)
+        {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if (memberInDb == null) return NotFound();
+            if(memberInDb.UserId != currentUserId) return Unauthorized();
+            _repo.Delete(memberInDb);
+            await _uow.Complete();
+            if(memberInDb.UserId != null)
+            {
+                await BroadCastUpdatedToken(memberInDb.UserId);
+            }
+            return Ok();
+        }
+        [HttpPost("EditMember")]
+        public async Task<IActionResult> EditMember(MemberUpdateDto dto)
+        {
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var memberInDb = await _repo.GetMemberByMemberId(dto.Id);
+
+            if(memberInDb.UserId == null && (ownedMess == null || ownedMess.Id != messId)) return Unauthorized();
+            if(memberInDb.UserId != null && memberInDb.UserId != currentUserId) return Unauthorized();
+            if(memberInDb == null) return NotFound();
+            if(memberInDb.UserId == null)
+            {
+                memberInDb.FirstName = dto.FirstName;
+                memberInDb.LastName = dto.LastName;
+            }
+            memberInDb.DBreakfast = dto.DBreakfast;
+            memberInDb.DLunch = dto.DLunch;
+            memberInDb.DDinner = dto.DDinner;
+            memberInDb.LastModifiedOn = DateTime.Now;
+            await _uow.Complete();
             return Ok();
         }
     }
