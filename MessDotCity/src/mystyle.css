@@ -40,6 +40,7 @@ ion-toolbar ion-title {
 {
 box-shadow:none !important
 }
+
 @media (max-width: 768px) {
     .hide-sm{
         display: none !important;

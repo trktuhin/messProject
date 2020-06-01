@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../_services/auth.service';
+import { ExpenseService } from '../_services/expense.service';
+import { DailyExpense } from '../_models/dailyExpense';
+import { totalmem } from 'os';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-daily-expenses',
@@ -7,34 +12,40 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./daily-expenses.page.scss'],
 })
 export class DailyExpensesPage implements OnInit {
-  dailyExpeses = [
-    {
-      totalExpense: 400,
-      expenseDate: new Date(2020, 0, 1),
-      responsibleMember: 'Robin Khan',
-      totalMeals: 8
-    },
-    {
-      totalExpense: 350,
-      expenseDate: new Date(2020, 0, 2),
-      responsibleMember: 'Tawhidur Rahman',
-      totalMeals: 7
-    },
-    {
-      totalExpense: 400,
-      expenseDate: new Date(2020, 0, 3),
-      responsibleMember: 'Dipu Rana',
-      totalMeals: 8
-    }
-  ];
-  constructor(private router: Router) { }
+  dailyExpenses: DailyExpense[] = [];
+  constructor(private router: Router, public authService: AuthService,
+              private expesesService: ExpenseService,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
   }
 
-  editMeals(exDate: Date) {
-    const dateString = exDate.getFullYear() + '-' + exDate.getMonth() + '-' + exDate.getDate();
-    this.router.navigate(['daily-expenses', 'edit-meals', dateString]);
+  ionViewWillEnter() {
+    const loader = this.loadingCtrl.create();
+    loader.then(el => el.present());
+    this.expesesService.getDailyExpenses().subscribe((res) => {
+      this.dailyExpenses = res;
+      loader.then(el => el.dismiss());
+    }, err => {
+      console.log(err);
+      loader.then(el => el.dismiss());
+    });
+  }
+
+  editMeals(id: number) {
+    // const exDate = new Date(dateToEditString);
+    // const dateString = exDate.getFullYear() + '-' + exDate.getMonth() + '-' + exDate.getDate();
+    this.router.navigate(['daily-expenses', 'edit-meals', id]);
+  }
+
+  geMealRate() {
+    let totalExpense = 0;
+    let totalMeal = 0;
+    this.dailyExpenses.forEach(element => {
+      totalExpense += element.expense;
+      totalMeal += element.totalMeal;
+    });
+    return totalExpense / totalMeal;
   }
 
 

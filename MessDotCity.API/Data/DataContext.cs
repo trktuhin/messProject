@@ -11,5 +11,15 @@ namespace MessDotCity.API.Data
         public DbSet<MessInfo> Messes { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<Request> Requests { get; set; }
+        public DbSet<DailyExpense> DailyExpenses { get; set; }
+        public DbSet<Meal> Meals { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Meal>(meal => {
+                meal.HasKey(ml => new {ml.MemberId, ml.Day});
+            });
+        }
     }
 }

@@ -3,7 +3,7 @@ import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Platform } from '@ionic/angular';
+import { Platform, ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth',
@@ -16,7 +16,8 @@ export class AuthPage implements OnInit {
   loginForm: FormGroup;
   constructor(private fb: FormBuilder, private authService: AuthService,
               private router: Router,
-              private platform: Platform) { }
+              private platform: Platform,
+              private toastCtrl: ToastController) { }
 
   ngOnInit() {
     this.createLoginForm();
@@ -79,9 +80,23 @@ export class AuthPage implements OnInit {
       password: this.loginForm.get('password').value
     };
     this.authService.login(model).subscribe(next => {
-      console.log('logged in successfully');
-      this.router.navigateByUrl('/dashboard');
-    }, err => console.log(err));
+      this.toastCtrl.create({
+        message: 'Logged in successfully',
+        duration: 1000,
+        color: 'success'
+      }).then(el => {
+        el.present();
+        this.router.navigateByUrl('/dashboard');
+      });
+    }, err => {
+      this.toastCtrl.create({
+        message: 'Mobile no or password is incorrect',
+        duration: 1000,
+        color: 'danger'
+      }).then(el => {
+        el.present();
+      });
+    });
   }
 
   register() {

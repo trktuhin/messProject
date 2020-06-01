@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { DailyExpense } from 'src/app/_models/dailyExpense';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { ExpenseService } from 'src/app/_services/expense.service';
+import { environment } from 'src/environments/environment';
+import { AuthService } from 'src/app/_services/auth.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-meals',
@@ -9,50 +13,31 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class EditMealsPage implements OnInit {
   dailyExpense: DailyExpense;
-  constructor(private route: ActivatedRoute) { }
+  membermeals: any[] = [];
+  baseImageUrl = environment.baseImageUrl;
+  constructor(private route: ActivatedRoute, private expenseService: ExpenseService,
+              public authService: AuthService,
+              private alertctrl: AlertController,
+              private router: Router) { }
 
   ngOnInit() {
-    let dateString = '';
+
+  }
+
+  ionViewWillEnter() {
+    let id: number;
     this.route.paramMap.subscribe(params => {
-      dateString = params.get('date');
+      id = +params.get('id');
     });
-    const datearr = dateString.split('-');
-    this.dailyExpense = {
-      expenseDate: new Date(+datearr[0], +datearr[1], +datearr[2]).toISOString(),
-      totalExpense: 1200,
-      responsiblePerson: 'Robin Khan',
-      meals: [
-        {
-          memberId: 1,
-          memberName: 'Robin Khan',
-          breakfast: 0,
-          lunch: 1,
-          dinner: 1,
-          photoUrl: 'https://images-na.ssl-images-amazon.com/images/I/71YqPv%2BaG7L._SL1500_.jpg'
-        },
-        {
-          memberId: 1,
-          memberName: 'Tawhidur Rahman',
-          breakfast: 1,
-          lunch: 1,
-          dinner: 1,
-          photoUrl: 'https://i.pinimg.com/originals/0d/0f/08/0d0f0898e1deb1ffce7ad53db8ba4e99.jpg'
-        },
-        {
-          memberId: 1,
-          memberName: 'Dipu Rana',
-          breakfast: 1,
-          lunch: 1,
-          dinner: 0,
-          photoUrl: 'https://www.facemama.com/wp-content/uploads/2012/10/boy-con-lentes-514x342.jpg'
-        }
-      ]
-    };
+    this.expenseService.getSingleExpense(id).subscribe((data: any) => {
+      this.dailyExpense = data.expense;
+      this.membermeals = data.memberMeals;
+    });
   }
 
   getTotalMeals() {
     let sum = 0;
-    this.dailyExpense.meals.forEach(element => {
+    this.membermeals.forEach(element => {
       sum += +element.breakfast;
       sum += +element.lunch;
       sum += +element.dinner;
@@ -60,4 +45,34 @@ export class EditMealsPage implements OnInit {
     return sum;
   }
 
+  onSubmit() {
+    const model = {
+      dailyExpense: this.dailyExpense,
+      memberMealResources: this.membermeals
+    };
+    this.expenseService.editDailyExpense(model).subscribe(() => {
+      this.router.navigate(['daily-expenses']);
+    }, err => console.log(err));
+  }
+
+  onDeleteExpense() {
+    this.alertctrl.create({
+      header: 'Are you sure to delete this expese?',
+      message: 'All data related to the expense will be gone',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.expenseService.deleteDailyExpense(this.dailyExpense.id).subscribe(() => {
+              this.router.navigate(['daily-expenses']);
+            }, err => console.log(err));
+          }
+        }
+      ]
+    }).then(el => el.present());
+  }
 }

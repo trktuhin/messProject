@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -68,6 +70,57 @@ namespace MessDotCity.API.Data
         public void RemoveMultiple<T>(IEnumerable<T> entities) where T : class
         {
             _context.RemoveRange(entities);
+        }
+
+        public void AddMultiple<T>(IEnumerable<T> entities) where T : class
+        {
+            _context.AddRange(entities);
+        }
+
+        public async Task<IEnumerable<DailyExpense>> GetDailyExpenses(int messId)
+        {
+            return await _context.DailyExpenses.Where(dex => dex.MessId == messId).OrderByDescending(dex => dex.Day).ToListAsync();
+        }
+
+        public async Task<IEnumerable<MemberMealResource>> GetMemberMealResources(int messId, DateTime day)
+        {
+            var members = _context.Members.Where(m => m.MessId == messId);
+            var meals = _context.Meals.Where(m => m.MessId == messId && m.Day.Date == day.Date);
+            return await members.Join(
+                meals,
+                member => member.Id,
+                meal => meal.MemberId,
+                (member, meal) => new MemberMealResource
+                {
+                    FirstName = member.FirstName,
+                    LastName = member.LastName,
+                    PhotoUrl = member.PhotoName,
+                    Breakfast = meal.BreakFast,
+                    Lunch = meal.Lunch,
+                    Dinner = meal.Dinner,
+                    MemberId = member.Id
+                }
+            ).ToListAsync();
+        }
+
+        public async Task<DailyExpense> GetDailyExpenseById(int id)
+        {
+            return await _context.DailyExpenses.FirstOrDefaultAsync(ex => ex.Id == id);
+        }
+
+        public async Task<DailyExpense> GetDailyExpenseByDate(DateTime day)
+        {
+            return await _context.DailyExpenses.FirstOrDefaultAsync(ex => ex.Day.Date == day.Date);
+        }
+
+        public async Task<IEnumerable<Meal>> GetMealsByDate(DateTime day, int messId)
+        {
+            return await _context.Meals.Where(m => m.MessId == messId && m.Day.Date == day.Date).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId)
+        {
+            return await _context.Meals.Where(m => m.MemberId == memberId).ToListAsync();
         }
     }
 }

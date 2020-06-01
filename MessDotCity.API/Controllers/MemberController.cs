@@ -272,5 +272,13 @@ namespace MessDotCity.API.Controllers
             await _uow.Complete();
             return Ok();
         }
+    
+        [HttpGet("ViewMeals/{memberId}")]
+        public async Task<IActionResult> ViewMeals(int memberId)
+        {
+            int sessionId = int.Parse(HttpContext.Request.Query["sessionId"].ToString());
+            var meals = await _repo.GetMealsByMemberId(memberId);
+            return Ok(meals);
+        }
     }
 }

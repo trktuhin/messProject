@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MembersService } from 'src/app/_services/members.service';
+import { ActivatedRoute } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-view-meals',
@@ -6,148 +9,61 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./view-meals.page.scss'],
 })
 export class ViewMealsPage implements OnInit {
+  memberId: number;
+  selectedMember: any;
+  meals: any[] = [];
   totalBreakfast = 0;
   totalLunch = 0;
   totalDinner = 0;
   totalMeals = 0;
-  mealsForMember = [];
 
-  constructor() { }
+  constructor(private memberService: MembersService, private route: ActivatedRoute,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
-    this.mealsForMember = [
-      {
-        date: new Date(2020, 0, 1, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 2, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 3, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 2
-      },
-      {
-        date: new Date(2020, 0, 4, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 0,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 5, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 0,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 6, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 7, 10, 33, 30, 0),
-        breakfast: 1,
-        lunch: 2,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 8, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 9, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 10, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 11, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 12, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 13, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 14, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 15, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 16, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 17, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 18, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      },
-      {
-        date: new Date(2020, 0, 19, 10, 33, 30, 0),
-        breakfast: 0,
-        lunch: 1,
-        dinner: 1
-      }
-    ];
+  }
+
+  calculateTotalMeals() {
     this.totalBreakfast = this.getTotalBreakfast();
     this.totalLunch = this.getTotalLunch();
     this.totalDinner = this.getTotalDinner();
     this.totalMeals = this.totalBreakfast + this.totalLunch + this.totalDinner;
   }
 
+  getSelectedMember() {
+    this.route.paramMap.subscribe(params => {
+      this.memberId = +params.get('memberId');
+      this.memberService.getMember(this.memberId).subscribe(res => {
+        this.selectedMember = res;
+      }, err => console.log(err));
+    });
+  }
+
+  ionViewWillEnter() {
+    const loader = this.loadingCtrl.create();
+    loader.then(el => el.present());
+    this.getSelectedMember();
+    this.memberService.viewMeals(this.memberId).subscribe((data: any) => {
+      this.meals = data;
+      this.calculateTotalMeals();
+      loader.then(el => el.dismiss());
+    }, err => {
+      console.log(err);
+      loader.then(el => el.dismiss());
+    });
+  }
+
   getTotalBreakfast() {
     let b = 0;
-    this.mealsForMember.forEach(element => {
-      b += element.breakfast;
+    this.meals.forEach(element => {
+      b += element.breakFast;
     });
     return b;
   }
 
   getTotalLunch() {
     let l = 0;
-    this.mealsForMember.forEach(element => {
+    this.meals.forEach(element => {
       l += element.lunch;
     });
     return l;
@@ -155,7 +71,7 @@ export class ViewMealsPage implements OnInit {
 
   getTotalDinner() {
     let d = 0;
-    this.mealsForMember.forEach(element => {
+    this.meals.forEach(element => {
       d += element.dinner;
     });
     return d;

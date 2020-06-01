@@ -5,7 +5,7 @@
     </ion-buttons>
     <ion-title>Add daily expense</ion-title>
     <ion-buttons slot="primary">
-      <ion-button>
+      <ion-button (click)="onSubmitDailyExpense()">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -18,21 +18,21 @@
       <ion-col size="6" size-md="4" offset-md="2">
         <ion-item>
           <ion-label position="floating" color="medium">Date</ion-label>
-          <ion-datetime displayFormat="MMM-DD-YYYY" name="expenseDate" [(ngModel)]="dailyExpense.expenseDate"></ion-datetime>
+          <ion-datetime displayFormat="MMM-DD-YYYY" name="expenseDate" [(ngModel)]="expenseDate"></ion-datetime>
         </ion-item>
       </ion-col>
       <ion-col size="6" size-md="4">
         <ion-item>
           <ion-label position="floating" color="medium">Expense</ion-label>
-          <ion-input type="number" name="totalExpense" [(ngModel)]="dailyExpense.totalExpense"></ion-input>
+          <ion-input type="number" name="totalExpense" [(ngModel)]="totalExpense"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="8">
         <ion-item>
-          <ion-select placeholder="Select One" class="full-width-select" name="responsibleP" [(ngModel)]="dailyExpense.responsiblePerson">
-            <ion-select-option *ngFor="let opt of dailyExpense.meals" [value]="opt.memberName">{{opt.memberName}}</ion-select-option>
+          <ion-select placeholder="Select One" class="full-width-select" name="responsibleP" [(ngModel)]="responsiblePerson">
+            <ion-select-option *ngFor="let opt of members" [value]="opt.firstName+' '+opt.lastName">{{opt.firstName}} {{opt.lastName}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
@@ -42,37 +42,37 @@
         </div>
       </ion-col>
     </ion-row>
-    <ion-row *ngFor="let meal of dailyExpense.meals">
+    <ion-row *ngFor="let member of members">
       <ion-col size="2"  class="py-0">
         <div>
           <ion-avatar  class="ml-auto">
-            <ion-img [src]="meal.photoUrl"></ion-img>
+            <ion-img [src]="member.photoName"></ion-img>
           </ion-avatar>
         </div>
       </ion-col>
       <ion-col size="10"  class="py-0">
         <ion-grid>
           <ion-row>
-            <ion-col size="8" class="py-0">{{meal.memberName}}</ion-col>
-            <ion-col size="4" class="py-0">Meals: {{(+meal.breakfast)+(+meal.lunch)+(+meal.dinner)}}</ion-col>
+            <ion-col size="8" class="py-0">{{member.firstName}} {{member.lastName}}</ion-col>
+            <ion-col size="4" class="py-0">Meals: {{(+member.dBreakfast)+(+member.dLunch)+(+member.dDinner)}}</ion-col>
           </ion-row>
           <ion-row>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Breakfast</ion-label>
-                <ion-input [name]="meal.memberId+'break'" [(ngModel)]="meal.breakfast"></ion-input>
+                <ion-input [name]="member.id+'break'" [(ngModel)]="member.dBreakfast"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Lunch</ion-label>
-                <ion-input [name]="meal.memberId+'lunch'" [(ngModel)]="meal.lunch"></ion-input>
+                <ion-input [name]="member.id+'lunch'" [(ngModel)]="member.dLunch"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Dinner</ion-label>
-                <ion-input [name]="meal.memberId+'dinner'" [(ngModel)]="meal.dinner"></ion-input>
+                <ion-input [name]="member.id+'dinner'" [(ngModel)]="member.dDinner"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>

@@ -1,8 +1,10 @@
 export interface DailyExpense{
-    expenseDate: any;
-    totalExpense: number;
-    responsiblePerson?: string;
-    meals: MealForMember[];
+    id?: number;
+    day: any;
+    expense: number;
+    messId?: number;
+    responsibleMember?: string;
+    totalMeal: number;
 }
 
 export interface MealForMember {

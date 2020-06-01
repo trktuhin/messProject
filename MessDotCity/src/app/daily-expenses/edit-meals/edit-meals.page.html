@@ -3,9 +3,9 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Edit Meals</ion-title>
-    <ion-buttons slot="primary">
-      <ion-button>
+    <ion-title>{{authService.isAdmin()?'Edit':'Detailed'}} Meals</ion-title>
+    <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
+      <ion-button (click)="onSubmit()">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -13,26 +13,26 @@
 </ion-header>
 
 <ion-content>
-  <ion-grid>
+  <ion-grid *ngIf="dailyExpense">
     <ion-row>
       <ion-col size="6" size-md="4" offset-md="2">
         <ion-item>
           <ion-label position="floating" color="medium">Date</ion-label>
-          <ion-datetime displayFormat="MMM-DD-YYYY" readonly name="expenseDate" [(ngModel)]="dailyExpense.expenseDate"></ion-datetime>
+          <ion-datetime readonly displayFormat="MMM-DD-YYYY" name="expenseDate" [(ngModel)]="dailyExpense.day"></ion-datetime>
         </ion-item>
       </ion-col>
       <ion-col size="6" size-md="4">
         <ion-item>
           <ion-label position="floating" color="medium">Expense</ion-label>
-          <ion-input type="number" name="totalExpense" [(ngModel)]="dailyExpense.totalExpense"></ion-input>
+          <ion-input [readonly]="!authService.isAdmin()" type="number" name="totalExpense" [(ngModel)]="dailyExpense.expense"></ion-input>
         </ion-item>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col size="8">
         <ion-item>
-          <ion-select placeholder="Select One" class="full-width-select" name="responsibleP" [(ngModel)]="dailyExpense.responsiblePerson">
-            <ion-select-option *ngFor="let opt of dailyExpense.meals" [value]="opt.memberName">{{opt.memberName}}</ion-select-option>
+          <ion-select [disabled]="!authService.isAdmin()" placeholder="Select One" class="full-width-select" name="responsibleP" [(ngModel)]="dailyExpense.responsibleMember">
+            <ion-select-option *ngFor="let opt of membermeals" [value]="opt.firstName+' '+opt.lastName">{{opt.firstName}} {{opt.lastName}}</ion-select-option>
           </ion-select>
         </ion-item>
       </ion-col>
@@ -42,41 +42,46 @@
         </div>
       </ion-col>
     </ion-row>
-    <ion-row *ngFor="let meal of dailyExpense.meals">
+    <ion-row *ngFor="let member of membermeals">
       <ion-col size="2"  class="py-0">
         <div>
           <ion-avatar  class="ml-auto">
-            <ion-img [src]="meal.photoUrl"></ion-img>
+            <ion-img [src]="member.photoUrl == null? baseImageUrl+'user.jpg' : baseImageUrl+member.photoUrl" ></ion-img>
           </ion-avatar>
         </div>
       </ion-col>
       <ion-col size="10"  class="py-0">
         <ion-grid>
           <ion-row>
-            <ion-col size="8" class="py-0">{{meal.memberName}}</ion-col>
-            <ion-col size="4" class="py-0">Meals: {{(+meal.breakfast)+(+meal.lunch)+(+meal.dinner)}}</ion-col>
+            <ion-col size="8" class="py-0">{{member.firstName}} {{member.lastName}}</ion-col>
+            <ion-col size="4" class="py-0">Meals: {{(+member.breakfast)+(+member.lunch)+(+member.dinner)}}</ion-col>
           </ion-row>
           <ion-row>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Breakfast</ion-label>
-                <ion-input [name]="meal.memberId+'break'" [(ngModel)]="meal.breakfast"></ion-input>
+                <ion-input [readonly]="!authService.isAdmin()" [name]="member.memberId+'break'" [(ngModel)]="member.breakfast"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Lunch</ion-label>
-                <ion-input [name]="meal.memberId+'lunch'" [(ngModel)]="meal.lunch"></ion-input>
+                <ion-input [readonly]="!authService.isAdmin()" [name]="member.memberId+'lunch'" [(ngModel)]="member.lunch"></ion-input>
               </ion-item>
             </ion-col>
             <ion-col class="py-0">
               <ion-item>
                 <ion-label position="floating" color="medium">Dinner</ion-label>
-                <ion-input [name]="meal.memberId+'dinner'" [(ngModel)]="meal.dinner"></ion-input>
+                <ion-input [readonly]="!authService.isAdmin()" [name]="member.memberId+'dinner'" [(ngModel)]="member.dinner"></ion-input>
               </ion-item>
             </ion-col>
           </ion-row>
         </ion-grid>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="authService.isAdmin()">
+      <ion-col size-md="2" offset-md="8" size="4" offset="6">
+        <ion-button (click)="onDeleteExpense()" color="danger">Delete Expense</ion-button>
       </ion-col>
     </ion-row>
   </ion-grid>

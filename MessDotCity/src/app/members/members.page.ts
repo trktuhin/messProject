@@ -65,7 +65,7 @@ export class MembersPage implements OnInit {
   }
 
   viewMeals(memberId: number) {
-    this.router.navigate(['/members/2/view-meals']);
+    this.router.navigate(['/members', memberId, 'view-meals']);
   }
 
   memberDetails(id: number) {

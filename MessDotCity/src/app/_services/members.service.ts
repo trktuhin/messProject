@@ -67,4 +67,8 @@ export class MembersService {
   editMember(model: any) {
     return this.http.post(this.baseUrl + 'EditMember', model);
   }
+
+  viewMeals(memberId: number) {
+    return this.http.get(this.baseUrl + 'ViewMeals/' + memberId + '?sessionId=1');
+  }
 }

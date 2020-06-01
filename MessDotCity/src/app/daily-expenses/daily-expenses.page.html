@@ -9,7 +9,7 @@
       </ion-label>
       Daily Expenses
     </ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
       <ion-button routerLink="add-daily-expense">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
@@ -29,20 +29,20 @@
             </ion-select>
           </ion-col>
           <ion-col size="6" class="text-right pr-2">
-            <ion-text color="tertiary">Meal Rate: 56.46</ion-text>
+            <ion-text color="tertiary">Meal Rate: {{geMealRate()| number:'0.0-2'}}</ion-text>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>
-    <ion-item *ngFor="let ex of dailyExpeses" detail (click)="editMeals(ex.expenseDate)">
+    <ion-item *ngFor="let ex of dailyExpenses" detail (click)="editMeals(ex.id)">
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-label color="primary">{{ex.expenseDate|date:"mediumDate"}}</ion-label>
-            <ion-label color="medium">Meals: {{ex.totalMeals}}</ion-label>
+            <ion-label color="primary">{{ex.day|date:"mediumDate"}}</ion-label>
+            <ion-label color="medium">Meals: {{ex.totalMeal}}</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label color="primary">Expense: {{ex.totalExpense}}</ion-label>
+            <ion-label color="primary">Expense: {{ex.expense}}</ion-label>
             <ion-label color="medium">By: {{ex.responsibleMember}}</ion-label>
           </ion-col>
         </ion-row>
