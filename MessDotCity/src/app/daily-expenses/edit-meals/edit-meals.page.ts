@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ExpenseService } from 'src/app/_services/expense.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from 'src/app/_services/auth.service';
-import { AlertController } from '@ionic/angular';
+import { AlertController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-meals',
@@ -18,7 +18,8 @@ export class EditMealsPage implements OnInit {
   constructor(private route: ActivatedRoute, private expenseService: ExpenseService,
               public authService: AuthService,
               private alertctrl: AlertController,
-              private router: Router) { }
+              private router: Router,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
 
@@ -29,10 +30,13 @@ export class EditMealsPage implements OnInit {
     this.route.paramMap.subscribe(params => {
       id = +params.get('id');
     });
+    const loader = this.loadingCtrl.create();
+    loader.then(el => el.present());
     this.expenseService.getSingleExpense(id).subscribe((data: any) => {
       this.dailyExpense = data.expense;
       this.membermeals = data.memberMeals;
-    });
+      loader.then(el => el.dismiss());
+    }, err => console.log(err));
   }
 
   getTotalMeals() {

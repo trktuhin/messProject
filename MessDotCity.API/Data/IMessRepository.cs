@@ -27,5 +27,7 @@ namespace MessDotCity.API.Data
          Task<DailyExpense> GetDailyExpenseByDate(DateTime day);
          Task<IEnumerable<Meal>> GetMealsByDate(DateTime day, int messId);
          Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId);
+         Task<IEnumerable<FixedExpense>> GetFixedExpenses(int messId);
+         Task<FixedExpense> GetFixedExpenseById(int id);
     }
 }

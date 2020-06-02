@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FixedExpense } from 'src/app/_models/fixedExpense';
+import { ExpenseService } from 'src/app/_services/expense.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-fixed-expense',
@@ -8,7 +11,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class AddFixedExpensePage implements OnInit {
   expenseForm: FormGroup;
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private expenseService: ExpenseService,
+              private router: Router) { }
 
   ngOnInit() {
     this.createExpenseForm();
@@ -21,6 +25,18 @@ export class AddFixedExpensePage implements OnInit {
       expenseDate: [ new Date().toISOString(), [Validators.required]],
       remarks: ['']
     });
+  }
+
+  onSubmit() {
+    const model: FixedExpense = {
+      title: this.expenseForm.get('expenseName').value,
+      amount: this.expenseForm.get('expenseAmount').value,
+      effectiveDate: this.expenseForm.get('expenseDate').value,
+      remarks: this.expenseForm.get('remarks').value,
+    };
+    this.expenseService.addFixedExpense(model).subscribe(() => {
+      this.router.navigate(['fixed-expenses']);
+    }, err => console.log(err));
   }
 
 }

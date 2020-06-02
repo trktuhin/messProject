@@ -7,7 +7,7 @@
       <ion-label><ion-icon slot="icon-only" name="reader"></ion-icon></ion-label>
        Fixed Expenses
     </ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
       <ion-button routerLink="add-fixed-expense">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
@@ -36,11 +36,11 @@
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-label color="primary">{{ex.expenseName}}</ion-label>
-            <ion-label color="medium">{{ex.expenseDate|date:"mediumDate"}}</ion-label>
+            <ion-label color="primary">{{ex.title}}</ion-label>
+            <ion-label color="medium">{{ex.effectiveDate|date:"mediumDate"}}</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label color="primary">Expense: {{ex.expenseAmount}}</ion-label>
+            <ion-label color="primary">Expense: {{ex.amount}}</ion-label>
             <ion-label class="hide-sm" color="medium">{{ex.remarks}}</ion-label>
           </ion-col>
         </ion-row>

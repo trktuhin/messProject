@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace MessDotCity.API.Data
@@ -11,8 +12,10 @@ namespace MessDotCity.API.Data
     public class MessRepository : IMessRepository
     {
         private readonly DataContext _context;
-        public MessRepository(DataContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MessRepository(DataContext context, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
 
         }
@@ -121,6 +124,24 @@ namespace MessDotCity.API.Data
         public async Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId)
         {
             return await _context.Meals.Where(m => m.MemberId == memberId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<FixedExpense>> GetFixedExpenses(int messId)
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            try
+            {
+                int sessionId = int.Parse(httpContext.Request.Query["sessionId"].ToString());
+            }
+            catch (System.Exception)
+            {}
+            return await _context.FixedExpenses.Where(fex => fex.MessId == messId).ToListAsync();
+
+        }
+
+        public async Task<FixedExpense> GetFixedExpenseById(int id)
+        {
+            return await _context.FixedExpenses.FirstOrDefaultAsync(fex => fex.Id == id);
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -156,6 +157,54 @@ namespace MessDotCity.API.Controllers
             var mealsInDb = await _repo.GetMealsByDate(dailyExpenseInDb.Day, messId);
             _repo.RemoveMultiple(mealsInDb);
             _repo.Delete(dailyExpenseInDb);
+            await _uow.Complete();
+            return Ok();
+        }
+        [HttpGet("GetFixedExpenses")]
+        public async Task<IActionResult> GetFixedExpenses()
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var fExpeses = await _repo.GetFixedExpenses(messId);
+            return Ok(fExpeses);
+        }
+
+        [HttpGet("GetFixedExpense/{id}")]
+        public async Task<IActionResult> GetFixedExpense(int id)
+        {
+            var fex = await _repo.GetFixedExpenseById(id);
+            if(fex == null) return NotFound();
+            return Ok(fex);
+        }
+
+        [HttpPost("AddFixedExpense")]
+        public async Task<IActionResult> AddFixedExpense(FixedExpenseDto dto)
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
+            var expenseToCreate = _mapper.Map<FixedExpense>(dto);
+            expenseToCreate.MessId = messId;
+            expenseToCreate.LastModifiedOn = DateTime.Now;
+            _repo.Add(expenseToCreate);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpPut("UpdateFixedExpense")]
+        public async Task<IActionResult> UpdateFixedExpense(FixedExpenseDto dto)
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            int id = 0;
+            if(dto.Id != null) id = (int)dto.Id;
+            var fexInDb = await _repo.GetFixedExpenseById(id);
+            if(fexInDb == null) return NotFound();
+            _mapper.Map<FixedExpenseDto,FixedExpense>(dto, fexInDb);
+            fexInDb.LastModifiedOn = DateTime.Now;
             await _uow.Complete();
             return Ok();
         }

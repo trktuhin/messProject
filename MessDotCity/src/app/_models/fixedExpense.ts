@@ -1,7 +1,7 @@
 export interface FixedExpense {
     id?: number;
-    expenseName: string;
-    expenseAmount: number;
-    expenseDate?: Date;
+    title: string;
+    amount: number;
+    effectiveDate?: Date;
     remarks?: string;
 }
