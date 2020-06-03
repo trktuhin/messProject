@@ -29,5 +29,7 @@ namespace MessDotCity.API.Data
          Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId);
          Task<IEnumerable<FixedExpense>> GetFixedExpenses(int messId);
          Task<FixedExpense> GetFixedExpenseById(int id);
+        Task<IEnumerable<SessionInfo>> GetSessions(int messId);
+         Task<SessionInfo> GetSession(int id);
     }
 }

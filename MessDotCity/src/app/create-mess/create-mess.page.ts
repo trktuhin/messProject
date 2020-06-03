@@ -39,7 +39,7 @@ export class CreateMessPage implements OnInit {
       secretCode: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]],
       selfMember: [true]
     }, {
-      validators: [this.updateTimeValidator, this.messNameValidator, this.secretCodeValidator]
+      validators: [this.messNameValidator, this.secretCodeValidator]
     });
   }
 

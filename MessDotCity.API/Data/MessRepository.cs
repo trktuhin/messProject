@@ -143,5 +143,15 @@ namespace MessDotCity.API.Data
         {
             return await _context.FixedExpenses.FirstOrDefaultAsync(fex => fex.Id == id);
         }
+
+        public async Task<IEnumerable<SessionInfo>> GetSessions(int messId)
+        {
+            return await _context.Sessions.Where(se => se.MessId == messId).ToListAsync();
+        }
+
+        public async Task<SessionInfo> GetSession(int id)
+        {
+            return await _context.Sessions.FirstOrDefaultAsync(se => se.Id == id);
+        }
     }
 }

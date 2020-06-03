@@ -48,4 +48,8 @@ export class ExpenseService {
     return this.http.get<FixedExpense>(this.baseUrl + 'GetFixedExpense/' + id);
   }
 
+  deleteFixedExpense(id: number) {
+    return this.http.delete(this.baseUrl + 'DeleteFixedExpense/' + id);
+  }
+
 }

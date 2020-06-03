@@ -208,5 +208,21 @@ namespace MessDotCity.API.Controllers
             await _uow.Complete();
             return Ok();
         }
+
+        [HttpDelete("DeleteFixedExpense/{id}")]
+        public async Task<IActionResult> DeleteFixedExpense(int id)
+        {
+            // checking is admin
+            int messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
+            var fixedExpenseInDb = await _repo.GetFixedExpenseById(id);
+            if(fixedExpenseInDb == null) return NotFound();
+            _repo.Delete(fixedExpenseInDb);
+            await _uow.Complete();
+            return Ok();
+        }
     }
 }

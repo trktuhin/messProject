@@ -1,6 +1,6 @@
 export interface SessionInfo {
-    sessionId?: number;
-    sessionName: string;
+    id?: number;
+    title: string;
     sessionStart: Date;
     sessionEnd: Date;
 }

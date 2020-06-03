@@ -6,7 +6,7 @@
     <ion-title>
       <ion-label><ion-icon slot="start" name="calendar"></ion-icon></ion-label>
        Sessions</ion-title>
-    <ion-buttons slot="primary">
+    <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
       <ion-button [routerLink]="'add-session'">
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
@@ -18,18 +18,18 @@
   <ion-grid>
     <ion-row *ngFor="let sn of sessions" align-items-center>
       <ion-col size="8" offset-md="1">
-        <ion-label>{{sn.sessionName}}</ion-label>
+        <ion-label>{{sn.title}}</ion-label>
         <p class="text-muted">
           <ion-icon slot="start" name="calendar"></ion-icon> {{sn.sessionStart| date:'mediumDate'}} -
           <ion-icon slot="start" name="calendar"></ion-icon> {{sn.sessionEnd| date:'mediumDate'}}</p>
       </ion-col>
-      <ion-col size="2" size-md="1">
-        <ion-button [routerLink]="['edit-session',sn.sessionId]" color="warning" title="edit">
+      <ion-col size="2" size-md="1" *ngIf="authService.isAdmin()">
+        <ion-button [routerLink]="['edit-session',sn.id]" color="warning" title="edit">
           <ion-icon slot="icon-only" name="create"></ion-icon>
         </ion-button>
       </ion-col>
-      <ion-col size="2" size-md="1" title="delete">
-        <ion-button (click)="onDeleteSession(sn.sessionId)" color="danger">
+      <ion-col size="2" size-md="1" title="delete"  *ngIf="authService.isAdmin()">
+        <ion-button (click)="onDeleteSession(sn.id)" color="danger">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
         </ion-button>
       </ion-col>

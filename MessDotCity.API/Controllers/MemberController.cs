@@ -97,6 +97,8 @@ namespace MessDotCity.API.Controllers
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
             if(ownedMess == null || ownedMess.Id != memberInDb.MessId) return Unauthorized();
 
+            if(memberInDb.UserId == ownedMess.OwnerId) return BadRequest("Can't remove yourself from your owwn mess");
+
             _repo.Delete(memberInDb);
             await _uow.Complete();
             if(memberInDb.UserId != null)
@@ -240,6 +242,8 @@ namespace MessDotCity.API.Controllers
             var memberInDb = await _repo.GetMemberByMemberId(memberId);
             if (memberInDb == null) return NotFound();
             if(memberInDb.UserId != currentUserId) return Unauthorized();
+            var messRole = User.FindFirst("messRole").Value;
+            if(messRole.ToLower() == "admin") return BadRequest("Can't reomve admin membership");
             _repo.Delete(memberInDb);
             await _uow.Complete();
             if(memberInDb.UserId != null)
@@ -259,6 +263,24 @@ namespace MessDotCity.API.Controllers
 
             if(memberInDb.UserId == null && (ownedMess == null || ownedMess.Id != messId)) return Unauthorized();
             if(memberInDb.UserId != null && memberInDb.UserId != currentUserId) return Unauthorized();
+
+            // update time checking
+            var messInDb = await _repo.GetmessByMessId(messId);
+            if(messInDb == null) return BadRequest("Mess not found");
+            var currentTime = DateTime.Now.TimeOfDay;
+            var startTime = messInDb.MealChangeFrom.TimeOfDay;
+            var endTime = messInDb.MealChangeTo.TimeOfDay;
+            if(startTime > endTime)
+            {
+                if(currentTime<startTime && currentTime>endTime) 
+                    return BadRequest("Wrong time to update!");
+            }
+            else {
+                if(currentTime<startTime || currentTime>endTime)
+                    return BadRequest("Wrong time to update!");
+            }
+
+
             if(memberInDb == null) return NotFound();
             if(memberInDb.UserId == null)
             {

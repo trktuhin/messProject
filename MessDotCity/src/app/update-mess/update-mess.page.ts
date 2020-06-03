@@ -43,7 +43,7 @@ export class UpdateMessPage implements OnInit {
       updateTo: [ new Date().toISOString(), [Validators.required]],
       secretCode: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(4)]]
     }, {
-      validators: [this.updateTimeValidator, this.secretCodeValidator]
+      validators: [this.secretCodeValidator]
     });
   }
 

@@ -3,7 +3,7 @@ import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Platform, ToastController } from '@ionic/angular';
+import { Platform, ToastController, LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-auth',
@@ -17,7 +17,8 @@ export class AuthPage implements OnInit {
   constructor(private fb: FormBuilder, private authService: AuthService,
               private router: Router,
               private platform: Platform,
-              private toastCtrl: ToastController) { }
+              private toastCtrl: ToastController,
+              private loadingCtrl: LoadingController) { }
 
   ngOnInit() {
     this.createLoginForm();
@@ -74,7 +75,8 @@ export class AuthPage implements OnInit {
   }
 
   login() {
-    // console.log(this.loginForm);
+    const loader = this.loadingCtrl.create();
+    loader.then(el => el.present());
     const model = {
       mobile: this.loginForm.get('mobile').value,
       password: this.loginForm.get('password').value
@@ -86,9 +88,11 @@ export class AuthPage implements OnInit {
         color: 'success'
       }).then(el => {
         el.present();
+        loader.then(ldel => ldel.dismiss());
         this.router.navigateByUrl('/dashboard');
       });
     }, err => {
+      loader.then(ldel => ldel.dismiss());
       this.toastCtrl.create({
         message: 'Mobile no or password is incorrect',
         duration: 1000,

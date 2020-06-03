@@ -5,14 +5,14 @@
     </ion-buttons>
     <ion-title>Edit Session</ion-title>
     <ion-buttons slot="primary">
-      <ion-button>
+      <ion-button (click)=" editSession()">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content *ngIf="selectedSession">
   <div class="row h-80p">
     <div class="col align-self-center">
       <ion-list [formGroup]="sessionForm">
@@ -28,7 +28,6 @@
           <ion-label position="floating" color="medium" >Session End</ion-label>
           <ion-datetime displayFormat="MMM-DD-YYYY" formControlName="sessionEnd"></ion-datetime>
         </ion-item>
-        <ion-button (click)="doVibrate()">Vibrate test</ion-button>
       </ion-list>
     </div>
   </div>

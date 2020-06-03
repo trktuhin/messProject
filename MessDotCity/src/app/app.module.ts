@@ -8,7 +8,6 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { Vibration } from '@ionic-native/vibration/ngx';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
@@ -38,7 +37,6 @@ export function tokenGetter() {
   ],
   providers: [
     StatusBar,
-    Vibration,
     SplashScreen,
     ErrorInterceptorProvider,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

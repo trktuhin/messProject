@@ -46,15 +46,15 @@ namespace MessDotCity.API.Controllers
         }
 
         [HttpPost("EditProfile")]
-        public async Task<IActionResult> EditProfile([FromForm]ProfileSubmitDto dto)
+        public async Task<IActionResult> EditProfile([FromForm] ProfileSubmitDto dto)
         {
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var profile = await _repo.GetUserProfileData(currentUserId);
             _mapper.Map<ProfileSubmitDto, UserInfo>(dto, profile);
-            if(dto.Image !=null)
+            if (dto.Image != null)
             {
-                if(dto.Image.Length > _photoSettings.MaxBytes) return BadRequest("Maximum size exceeded");
-                if(!(_photoSettings.AcceptedFileTypes.Any(s => s == Path.GetExtension(dto.Image.FileName).ToLower())))
+                if (dto.Image.Length > _photoSettings.MaxBytes) return BadRequest("Maximum size exceeded");
+                if (!(_photoSettings.AcceptedFileTypes.Any(s => s == Path.GetExtension(dto.Image.FileName).ToLower())))
                 {
                     return BadRequest("Invalid file type");
                 }
@@ -62,7 +62,7 @@ namespace MessDotCity.API.Controllers
             }
             // changing members info
             var memberInDb = await _messRepo.GetMemberByUserId(currentUserId);
-            if(memberInDb != null)
+            if (memberInDb != null)
             {
                 memberInDb.FirstName = profile.FirstName;
                 memberInDb.LastName = profile.LastName;
@@ -78,24 +78,94 @@ namespace MessDotCity.API.Controllers
         {
             var uploadFolderPath = Path.Combine(_env.WebRootPath, "images");
             //creating folder if doesn't exist
-            if(!Directory.Exists(uploadFolderPath))
+            if (!Directory.Exists(uploadFolderPath))
             {
                 Directory.CreateDirectory(uploadFolderPath);
             }
             //removing existing photoUrl
-            if(!string.IsNullOrEmpty(profile.PhotoUrl))
+            if (!string.IsNullOrEmpty(profile.PhotoUrl))
             {
                 var existingFilePath = Path.Combine(uploadFolderPath, profile.PhotoUrl);
                 System.IO.File.Delete(existingFilePath);
             }
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imageFile.FileName);
             var filePath = Path.Combine(uploadFolderPath, fileName);
-            using(var stream = new FileStream(filePath, FileMode.Create))
+            using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await imageFile.CopyToAsync(stream);
             }
             profile.PhotoUrl = fileName;
         }
 
+
+        [HttpPost("AddSession")]
+        public async Task<IActionResult> AddSession(SessionDto dto)
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _messRepo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
+            // var sessionToCreate = _mapper.Map<SessionInfo>(dto);
+            var sessionToCreate = new SessionInfo();
+            sessionToCreate.MessId = messId;
+            sessionToCreate.Title = dto.Title;
+            sessionToCreate.SessionStart = dto.SessionStart.Date;
+            sessionToCreate.SessionEnd = dto.SessionEnd.Date;
+            sessionToCreate.LastModifiedOn = DateTime.Now;
+            _messRepo.Add(sessionToCreate);
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpPut("UpdateSession")]
+        public async Task<IActionResult> UpdateSession(SessionDto dto)
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _messRepo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
+            var seInDb = await _messRepo.GetSession((int)dto.Id);
+            if(seInDb == null) return NotFound();
+            _mapper.Map<SessionDto,SessionInfo>(dto, seInDb);
+            seInDb.SessionStart = seInDb.SessionStart.Date;
+            seInDb.SessionEnd = seInDb.SessionEnd.Date;
+            seInDb.MessId = messId;
+            seInDb.LastModifiedOn = DateTime.Now;
+            await _uow.Complete();
+            return Ok();
+        }
+
+        [HttpGet("GetSessions")]
+        public async Task<IActionResult> GetSessions()
+        {
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var sessions = await _messRepo.GetSessions(messId);
+            return Ok(sessions);
+        }
+
+        [HttpGet("GetSession/{id}")]
+        public async Task<IActionResult> GetSession(int id)
+        {
+            var session = await _messRepo.GetSession(id);
+            if(session == null) return NotFound();
+            return Ok(session);
+        }
+
+        [HttpDelete("DeleteSession/{id}")]
+        public async Task<IActionResult> DeleteSession(int id)
+        {
+            int messId = int.Parse(User.FindFirst("MessId").Value);
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _messRepo.GetMessByOwner(currentUserId);
+            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+
+            var sessionInDb = await _messRepo.GetSession(id);
+            if(sessionInDb == null) return NotFound();
+            _messRepo.Delete(sessionInDb);
+            await _uow.Complete();
+            return Ok();
+        }
     }
 }

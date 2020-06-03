@@ -19,6 +19,9 @@ namespace MessDotCity.API.Helpers
             CreateMap<MemberCreationDto, Member>();
             CreateMap<FixedExpenseDto, FixedExpense>()
                 .ForMember(des => des.Id, opt => opt.Ignore());
+
+            CreateMap<SessionDto, SessionInfo>()
+                .ForMember(des => des.Id, opt => opt.Ignore());
                 
             CreateMap<MessUpdateDto, MessInfo>()
                 .ForMember(des => des.MealChangeFrom, 

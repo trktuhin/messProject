@@ -5,6 +5,7 @@ using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Dtos;
+using MessDotCity.API.Helpers;
 using MessDotCity.API.Hubs;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,17 +22,20 @@ namespace MessDotCity.API.Controllers
         private readonly IHubContext<TokenHub> _tokenHubContext;
         private readonly IUnitOfWork _uow;
         private readonly IProfileRepository _proRepo;
+        private readonly ICommonMethods _cms;
+
         public MessController(IMapper mapper, IMessRepository repo,
                             IUnitOfWork uow,
-                            IProfileRepository proRepo
-                            ,IHubContext<TokenHub> tokenHubContext)
+                            IProfileRepository proRepo,
+                            IHubContext<TokenHub> tokenHubContext,
+                            ICommonMethods cms)
         {
             _proRepo = proRepo;
             _uow = uow;
             _repo = repo;
             _mapper = mapper;
             _tokenHubContext = tokenHubContext;
-
+            _cms = cms;
         }
 
         [HttpGet]
@@ -68,7 +72,18 @@ namespace MessDotCity.API.Controllers
             memberToCreate.MessRole = "admin";
             _repo.Add(memberToCreate);
             await _uow.Complete();
+            await BroadCastUpdatedToken(currentUserId);
             return Ok();
+        }
+
+        public async Task BroadCastUpdatedToken(string userId)
+        {
+            var updatedToken = await _cms.GetUpdatedToken(userId);
+            var messName = await _cms.GetMessName(userId);
+            await _tokenHubContext.Clients.Group(userId).SendAsync("ReceiveToken", new {
+                token = updatedToken,
+                messName = messName
+            });
         }
 
         [HttpPut("updateMess")]

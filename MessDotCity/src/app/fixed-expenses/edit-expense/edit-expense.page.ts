@@ -4,6 +4,7 @@ import { FixedExpense } from 'src/app/_models/fixedExpense';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ExpenseService } from 'src/app/_services/expense.service';
 import { AuthService } from 'src/app/_services/auth.service';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-expense',
@@ -15,7 +16,8 @@ export class EditExpensePage implements OnInit {
   constructor(private fb: FormBuilder, private route: ActivatedRoute,
               private expenseService: ExpenseService,
               private router: Router,
-              public authService: AuthService) { }
+              public authService: AuthService,
+              private alertCtrl: AlertController) { }
   selectedExpense: FixedExpense;
   ngOnInit() {
   }
@@ -51,6 +53,27 @@ export class EditExpensePage implements OnInit {
     this.expenseService.updateFixedExpense(model).subscribe(() => {
       this.router.navigate(['fixed-expenses']);
     }, err => console.log(err));
+  }
+
+  deleteExpense() {
+    this.alertCtrl.create({
+      header: 'Are you sure',
+      message: 'This expense will be deleted permanently !',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Delete',
+          handler: () => {
+            this.expenseService.deleteFixedExpense(this.selectedExpense.id).subscribe(() => {
+              this.router.navigate(['fixed-expenses']);
+            }, err => console.log(err));
+          }
+        }
+      ]
+    }).then(el => el.present());
   }
 
 }

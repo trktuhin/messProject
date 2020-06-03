@@ -14,6 +14,7 @@ namespace MessDotCity.API.Data
         public DbSet<DailyExpense> DailyExpenses { get; set; }
         public DbSet<Meal> Meals { get; set; }
         public DbSet<FixedExpense> FixedExpenses { get; set; }
+        public DbSet<SessionInfo> Sessions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
