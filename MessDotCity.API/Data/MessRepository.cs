@@ -153,5 +153,32 @@ namespace MessDotCity.API.Data
         {
             return await _context.Sessions.FirstOrDefaultAsync(se => se.Id == id);
         }
+
+        public async Task<IEnumerable<MemberDropdownResource>> MembersForDropdown(int messId)
+        {
+            var members = _context.Members.Where(m => m.MessId == messId).Select(m => new MemberDropdownResource{
+                Id = m.Id,
+                FirstName = m.FirstName,
+                LastName = m.LastName
+            });
+            return await members.ToListAsync();
+        }
+
+        public async Task<float> GetTotalCredit(int memberId)
+        {
+            var credits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Credit);
+            return credits;
+        }
+
+        public async Task<float> GetTotalDebit(int memberId)
+        {
+            var debits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Debit);
+            return debits;
+        }
+
+        public async Task<IEnumerable<Deposit>> GetDepositsByMemberId(int memberId)
+        {
+            return await _context.Deposits.Where(dp => dp.MemberId == memberId).OrderByDescending(dp => dp.Id).ToListAsync();
+        }
     }
 }

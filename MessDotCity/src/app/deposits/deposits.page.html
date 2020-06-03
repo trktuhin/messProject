@@ -27,19 +27,19 @@
       <ion-col size="3" size-md="2" offset-md="1">
         <ion-avatar class="mx-auto">
           <ion-img width="80" height="80"
-            src="{{dr.photoUrl}}">
+            [src]="dr.photoName == null? baseImageUrl+'user.jpg' : baseImageUrl+dr.photoName">
           </ion-img>
         </ion-avatar>
       </ion-col>
       <ion-col size="3">
-        <ion-label>{{dr.memberName}}</ion-label>
-        <p class="text-muted">৳ {{dr.balance}}</p>
+        <ion-label>{{dr.firstName}} {{dr.lastName}}</ion-label>
+        <p class="text-muted">৳ {{dr.totalDebit - dr.totalCredit}}</p>
       </ion-col>
       <ion-col size="6" size-md="5">
-        <ion-button color="success" (click)="openModal('add', dr.memberId)" title="add">
+        <ion-button *ngIf="authService.isAdmin()" color="success" (click)="openModal('debit', dr.memberId)" title="add">
           <ion-icon slot="icon-only" name="add-circle"></ion-icon>
         </ion-button>
-        <ion-button color="danger" (click)="openModal('withdraw', dr.memberId)" title="withdraw">
+        <ion-button *ngIf="authService.isAdmin()" color="danger" (click)="openModal('credit', dr.memberId)" title="withdraw">
           <ion-icon slot="icon-only" name="remove-circle"></ion-icon>
         </ion-button>
         <ion-button color="secondary" [routerLink]="['deposit-history', dr.memberId]" title="history">

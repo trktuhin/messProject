@@ -16,8 +16,8 @@
           <ion-select-option value="February2020">February 2020</ion-select-option>
         </ion-select>
       </ion-col>
-      <ion-col size="6" class="text-right text-tertiary pr-2">
-        <ion-label color="tertiary">{{selectedMember.memberName}}</ion-label>
+      <ion-col size="6" class="text-right text-tertiary pr-2" *ngIf="selectedMember">
+        <ion-label color="tertiary">{{selectedMember.firstName}} {{selectedMember.lastName}}</ion-label>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -36,13 +36,13 @@
     </ion-row>
     <ion-row *ngFor="let dp of selectedMemberdeposits">
       <ion-col size="6" size-md="4" offset-md="1">
-        <ion-label>{{dp.depositDate|date:'mediumDate'}}</ion-label>
+        <ion-label>{{dp.effectiveDate|date:'mediumDate'}}</ion-label>
       </ion-col>
       <ion-col size="2">
-        <ion-label>{{dp.depositType==='add'?dp.depositAmount:'-'}}</ion-label>
+        <ion-label>{{dp.debit===0?'-':dp.debit}}</ion-label>
       </ion-col>
       <ion-col size="2">
-        <ion-label>{{dp.depositType==='withdraw'?dp.depositAmount:'-'}}</ion-label>
+        <ion-label>{{dp.credit===0?'-':dp.credit}}</ion-label>
       </ion-col>
       <ion-col size="2">
         <ion-label>

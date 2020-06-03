@@ -1,8 +1,9 @@
 export interface DepositInfo {
-    depositId?: number;
-    depositDate: Date;
-    depositAmount: number;
-    remarks?: string;
     memberId?: number;
+    firstName: string;
+    lastName: string;
+    photoName: string;
     depositType?: string;
+    totalDebit: number;
+    totalCredit: number;
 }

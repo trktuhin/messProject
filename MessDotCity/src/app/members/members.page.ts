@@ -36,11 +36,15 @@ export class MembersPage implements OnInit {
     this.requestInitialize();
   }
   memberInitialize() {
+    const loader = this.loadingCtrl.create();
+    loader.then(el => el.present());
     this.memberService.getMembers().subscribe(res => {
       this.members = res;
+      loader.then(el => el.dismiss());
       // console.log(this.members);
     }, err => {
       console.log(err);
+      loader.then(el => el.dismiss());
     });
   }
 

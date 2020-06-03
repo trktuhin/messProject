@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DepositInfo } from 'src/app/_models/depositInfo';
+import { MemberInfo } from 'src/app/_models/memberInfo';
+import { ActivatedRoute } from '@angular/router';
+import { MembersService } from 'src/app/_services/members.service';
+import { DepositService } from 'src/app/_services/deposit.service';
 
 @Component({
   selector: 'app-deposit-history',
@@ -8,56 +12,49 @@ import { DepositInfo } from 'src/app/_models/depositInfo';
 })
 export class DepositHistoryPage implements OnInit {
 
-  selectedMember = {
-    memberId: 1,
-    memberName: 'Robin Khan'
-  };
-  selectedMemberdeposits: DepositInfo[] = [
-    {
-      depositId: 1,
-      depositAmount: 2000,
-      depositType: 'add',
-      depositDate: new Date(2020, 0, 2),
-      remarks: '1st installment'
-    },
-    {
-      depositId: 2,
-      depositAmount: 500,
-      depositType: 'add',
-      depositDate: new Date(2020, 0, 12),
-      remarks: '2nd installment'
-    },
-    {
-      depositId: 3,
-      depositAmount: 300,
-      depositType: 'withdraw',
-      depositDate: new Date(2020, 0, 15),
-      remarks: 'For electricity due'
-    }
-  ];
-  constructor() { }
+  selectedMember: MemberInfo;
+  selectedMemberdeposits = [];
+  memberId = 0;
+  constructor(private route: ActivatedRoute, private memberService: MembersService,
+              private depositService: DepositService) { }
 
   ngOnInit() {
   }
 
-  getTotalAdd() {
-    let add = 0;
-    this.selectedMemberdeposits.forEach(element => {
-      if(element.depositType === 'add') {
-        add += element.depositAmount;
-      }
+  getMemberDetails() {
+    this.route.paramMap.subscribe(params => {
+      this.memberId = +params.get('memberId');
+      this.memberService.getMember(this.memberId).subscribe(res => {
+        this.selectedMember = res;
+        this.depositInitialize();
+      }, err => console.log(err));
     });
-    return add;
+  }
+
+  depositInitialize() {
+    this.depositService.getDepositHistory(this.memberId).subscribe((res: any) => {
+      this.selectedMemberdeposits = res;
+    }, err => console.log(err));
+  }
+
+  ionViewWillEnter() {
+    this.getMemberDetails();
+  }
+
+  getTotalAdd() {
+    let debit = 0;
+    this.selectedMemberdeposits.forEach(element => {
+      debit += element.debit;
+    });
+    return debit;
   }
 
   getTotalWithdraw() {
-    let withdraw = 0;
+    let credit = 0;
     this.selectedMemberdeposits.forEach(element => {
-      if(element.depositType === 'withdraw') {
-        withdraw += element.depositAmount;
-      }
+      credit += element.credit;
     });
-    return withdraw;
+    return credit;
   }
 
   getTotalBalance() {
