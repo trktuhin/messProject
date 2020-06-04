@@ -52,4 +52,8 @@ export class ExpenseService {
     return this.http.delete(this.baseUrl + 'DeleteFixedExpense/' + id);
   }
 
+  getOtherMealRate() {
+    return this.http.get(this.baseUrl + 'GetMealRatesWithPerHeads');
+  }
+
 }

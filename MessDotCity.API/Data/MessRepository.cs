@@ -176,6 +176,28 @@ namespace MessDotCity.API.Data
             return debits;
         }
 
+        public async Task<float> GetTotalMealsForMember(int memberId)
+        {
+            var breakfasts = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.BreakFast);
+            var lunchs = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.Lunch);
+            var dinners = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.Dinner);
+            return breakfasts+lunchs+dinners;
+        }
+
+        public async Task<float> GetMealReate(int messId)
+        {
+            var totalExpense = await _context.DailyExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.Expense);
+            var meals = await _context.DailyExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.TotalMeal);
+            return totalExpense/(float)meals;
+        }
+
+        public async Task<float> FixedExpersePerMember(int messId)
+        {
+            var totalExpense = await _context.FixedExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.Amount);
+            var totalMember = await _context.Members.Where(m => m.MessId == messId).CountAsync();
+            return totalExpense/totalMember;
+        }
+
         public async Task<IEnumerable<Deposit>> GetDepositsByMemberId(int memberId)
         {
             return await _context.Deposits.Where(dp => dp.MemberId == memberId).OrderByDescending(dp => dp.Id).ToListAsync();

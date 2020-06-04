@@ -224,5 +224,19 @@ namespace MessDotCity.API.Controllers
             await _uow.Complete();
             return Ok();
         }
+
+        [HttpGet("GetMealRatesWithPerHeads")]
+        public async Task<IActionResult> GetMealRates()
+        {
+            int messId = int.Parse(User.FindFirst("MessId").Value);
+            var messInDb = await _repo.GetmessByMessId(messId);
+            if(messInDb == null) return NotFound();
+            var mealRate = await _repo.GetMealReate(messId);
+            var fixedPerHead = await _repo.FixedExpersePerMember(messId);
+            return Ok(new {
+                mealRate = mealRate,
+                otherExpense = fixedPerHead
+            });
+        }
     }
 }

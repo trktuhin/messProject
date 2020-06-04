@@ -8,5 +8,6 @@ namespace MessDotCity.API.Data.Resource
         public string PhotoName { get; set; }
         public float TotalDebit { get; set; }
         public float TotalCredit { get; set; }
+        public float TotalMeals { get; set; }
     }
 }

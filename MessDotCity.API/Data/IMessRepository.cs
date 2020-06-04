@@ -35,5 +35,8 @@ namespace MessDotCity.API.Data
          Task<float> GetTotalCredit(int memberId);
          Task<float> GetTotalDebit(int memberId);
          Task<IEnumerable<Deposit>> GetDepositsByMemberId(int memberId);
+         Task<float> GetTotalMealsForMember(int memberId);
+         Task<float> GetMealReate(int messId);
+         Task<float> FixedExpersePerMember(int messId);
     }
 }

@@ -6,4 +6,5 @@ export interface DepositInfo {
     depositType?: string;
     totalDebit: number;
     totalCredit: number;
+    totalMeals?: number;
 }

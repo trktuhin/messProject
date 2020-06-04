@@ -61,6 +61,7 @@ namespace MessDotCity.API.Controllers
                 tempResource.PhotoName = member.PhotoName;
                 tempResource.TotalCredit = await _repo.GetTotalCredit(member.Id);
                 tempResource.TotalDebit = await _repo.GetTotalDebit(member.Id);
+                tempResource.TotalMeals = await _repo.GetTotalMealsForMember(member.Id);
                 depositResources.Add(tempResource);
             }
             return Ok(depositResources);
