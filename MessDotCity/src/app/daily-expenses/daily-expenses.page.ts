@@ -5,6 +5,8 @@ import { ExpenseService } from '../_services/expense.service';
 import { DailyExpense } from '../_models/dailyExpense';
 import { totalmem } from 'os';
 import { LoadingController } from '@ionic/angular';
+import { SessionInfo } from '../_models/sessionInfo';
+import { ProfileService } from '../_services/profile.service';
 
 @Component({
   selector: 'app-daily-expenses',
@@ -13,17 +15,33 @@ import { LoadingController } from '@ionic/angular';
 })
 export class DailyExpensesPage implements OnInit {
   dailyExpenses: DailyExpense[] = [];
+  sessions: SessionInfo[];
+  selectedSessionId = 0;
   constructor(private router: Router, public authService: AuthService,
               private expesesService: ExpenseService,
-              private loadingCtrl: LoadingController) { }
+              private loadingCtrl: LoadingController,
+              private profileService: ProfileService) { }
 
   ngOnInit() {
   }
+  getSessions() {
+    this.profileService.getSessions().subscribe(res => {
+      this.sessions = res;
+      if (res[0]) {
+        this.selectedSessionId = res[0].id;
+      }
+      this.getDailyExpenses();
+    });
+  }
 
-  ionViewWillEnter() {
+  onSessionChange() {
+    this.getDailyExpenses();
+   }
+
+  getDailyExpenses() {
     const loader = this.loadingCtrl.create();
     loader.then(el => el.present());
-    this.expesesService.getDailyExpenses().subscribe((res) => {
+    this.expesesService.getDailyExpenses(this.selectedSessionId).subscribe((res) => {
       this.dailyExpenses = res;
       loader.then(el => el.dismiss());
     }, err => {
@@ -32,9 +50,11 @@ export class DailyExpensesPage implements OnInit {
     });
   }
 
+  ionViewWillEnter() {
+    this.getSessions();
+  }
+
   editMeals(id: number) {
-    // const exDate = new Date(dateToEditString);
-    // const dateString = exDate.getFullYear() + '-' + exDate.getMonth() + '-' + exDate.getDate();
     this.router.navigate(['daily-expenses', 'edit-meals', id]);
   }
 

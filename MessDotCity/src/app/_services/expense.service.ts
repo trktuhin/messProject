@@ -16,8 +16,12 @@ export class ExpenseService {
     return this.http.post(this.baseUrl + 'AddDailyExpense', model);
   }
 
-  getDailyExpenses() {
-    return this.http.get<DailyExpense[]>(this.baseUrl + 'GetDailyExpenses');
+  getDailyExpenses(sessionId?: number) {
+    let selectedSessionId = 0;
+    if (sessionId) {
+      selectedSessionId = sessionId;
+    }
+    return this.http.get<DailyExpense[]>(this.baseUrl + 'GetDailyExpenses' + '?sessionId=' + selectedSessionId);
   }
 
   getSingleExpense(id: number) {
@@ -40,8 +44,12 @@ export class ExpenseService {
     return this.http.put(this.baseUrl + 'UpdateFixedExpense', model);
   }
 
-  getFixedExpenses() {
-    return this.http.get<FixedExpense[]>(this.baseUrl + 'GetFixedExpenses');
+  getFixedExpenses(sessionId?: number) {
+    let selectedSessionId = 0;
+    if (sessionId) {
+      selectedSessionId = sessionId;
+    }
+    return this.http.get<FixedExpense[]>(this.baseUrl + 'GetFixedExpenses' + '?sessionId=' + selectedSessionId);
   }
 
   getFixedExpense(id: number) {
@@ -52,8 +60,12 @@ export class ExpenseService {
     return this.http.delete(this.baseUrl + 'DeleteFixedExpense/' + id);
   }
 
-  getOtherMealRate() {
-    return this.http.get(this.baseUrl + 'GetMealRatesWithPerHeads');
+  getOtherMealRate(sessionId?: number) {
+    let selectedSessionId = 0;
+    if (sessionId) {
+      selectedSessionId = sessionId;
+    }
+    return this.http.get(this.baseUrl + 'GetMealRatesWithPerHeads' + '?sessionId=' + selectedSessionId);
   }
 
 }

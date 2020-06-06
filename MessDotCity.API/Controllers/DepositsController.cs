@@ -52,6 +52,17 @@ namespace MessDotCity.API.Controllers
             var members = await _repo.GetMembersByMessId(messId);
             List<DepositResource> depositResources = new List<DepositResource>();
             DepositResource tempResource;
+
+            int sessionId = 0;
+            SessionInfo sessionInDb;
+            try
+            {
+                sessionId = int.Parse(HttpContext.Request.Query["sessionId"].ToString());
+            }
+            catch (System.Exception)
+            {}
+            sessionInDb = await _repo.GetSession(sessionId);
+
             foreach(var member in members)
             {
                 tempResource =new DepositResource();
@@ -59,9 +70,9 @@ namespace MessDotCity.API.Controllers
                 tempResource.FirstName = member.FirstName;
                 tempResource.LastName = member.LastName;
                 tempResource.PhotoName = member.PhotoName;
-                tempResource.TotalCredit = await _repo.GetTotalCredit(member.Id);
-                tempResource.TotalDebit = await _repo.GetTotalDebit(member.Id);
-                tempResource.TotalMeals = await _repo.GetTotalMealsForMember(member.Id);
+                tempResource.TotalCredit = await _repo.GetTotalCredit(member.Id,sessionInDb);
+                tempResource.TotalDebit = await _repo.GetTotalDebit(member.Id,sessionInDb);
+                tempResource.TotalMeals = await _repo.GetTotalMealsForMember(member.Id,sessionInDb);
                 depositResources.Add(tempResource);
             }
             return Ok(depositResources);

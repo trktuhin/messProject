@@ -40,5 +40,4 @@ export class ProfileService {
   deleteSession(id: number) {
     return this.http.delete<SessionInfo>(this.baseUrl + 'DeleteSession/' + id);
   }
-
 }

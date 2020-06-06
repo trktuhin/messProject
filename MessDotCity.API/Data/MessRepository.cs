@@ -82,7 +82,17 @@ namespace MessDotCity.API.Data
 
         public async Task<IEnumerable<DailyExpense>> GetDailyExpenses(int messId)
         {
-            return await _context.DailyExpenses.Where(dex => dex.MessId == messId).OrderByDescending(dex => dex.Day).ToListAsync();
+            SessionInfo sessionInDb = await GetCurrentSession();
+            if(sessionInDb != null)
+            {
+                return await _context.DailyExpenses.Where(dex => dex.MessId == messId &&
+                dex.Day >= sessionInDb.SessionStart && dex.Day <= sessionInDb.SessionEnd)
+                .OrderByDescending(dex => dex.Day).ToListAsync();
+            }
+            else
+            {
+                return await _context.DailyExpenses.Where(dex => dex.MessId == messId).OrderByDescending(dex => dex.Day).ToListAsync();
+            }
         }
 
         public async Task<IEnumerable<MemberMealResource>> GetMemberMealResources(int messId, DateTime day)
@@ -123,19 +133,33 @@ namespace MessDotCity.API.Data
 
         public async Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId)
         {
-            return await _context.Meals.Where(m => m.MemberId == memberId).ToListAsync();
+            SessionInfo sessionInDb = await GetCurrentSession();
+            if(sessionInDb != null)
+            {
+                return await _context.Meals.Where(m => m.MemberId == memberId &&
+                m.Day >= sessionInDb.SessionStart && m.Day <= sessionInDb.SessionEnd)
+                .ToListAsync();
+            }
+            else
+            {
+                return await _context.Meals.Where(m => m.MemberId == memberId).ToListAsync();
+            }
         }
 
         public async Task<IEnumerable<FixedExpense>> GetFixedExpenses(int messId)
         {
-            var httpContext = _httpContextAccessor.HttpContext;
-            try
+            SessionInfo sessionInDb = await GetCurrentSession();
+            if(sessionInDb != null)
             {
-                int sessionId = int.Parse(httpContext.Request.Query["sessionId"].ToString());
+                return await _context.FixedExpenses.Where(fex => fex.MessId == messId && 
+                fex.EffectiveDate >= sessionInDb.SessionStart && fex.EffectiveDate <= sessionInDb.SessionEnd)
+                .ToListAsync();
             }
-            catch (System.Exception)
-            {}
-            return await _context.FixedExpenses.Where(fex => fex.MessId == messId).ToListAsync();
+            else
+            {
+                return await _context.FixedExpenses.Where(fex => fex.MessId == messId)
+                .ToListAsync();
+            }
 
         }
 
@@ -164,43 +188,133 @@ namespace MessDotCity.API.Data
             return await members.ToListAsync();
         }
 
-        public async Task<float> GetTotalCredit(int memberId)
+        public async Task<float> GetTotalCredit(int memberId, SessionInfo sessionInDb)
         {
-            var credits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Credit);
+            float credits = 0;
+            if(sessionInDb != null)
+            {
+                credits = await _context.Deposits.Where(m => m.MemberId == memberId && 
+                m.EffectiveDate >= sessionInDb.SessionStart && m.EffectiveDate <= sessionInDb.SessionEnd)
+                .SumAsync(m => m.Credit);
+            }
+            else{
+                credits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Credit);
+            }
             return credits;
         }
 
-        public async Task<float> GetTotalDebit(int memberId)
+        public async Task<float> GetTotalDebit(int memberId, SessionInfo sessionInDb)
         {
-            var debits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Debit);
+            float debits = 0;
+            if(sessionInDb != null)
+            {
+                debits = await _context.Deposits.Where(m => m.MemberId == memberId && 
+                m.EffectiveDate >= sessionInDb.SessionStart && m.EffectiveDate <= sessionInDb.SessionEnd)
+                .SumAsync(m => m.Debit);
+            }
+            else{
+                debits = await _context.Deposits.Where(m => m.MemberId == memberId).SumAsync(m => m.Debit);
+            }
             return debits;
         }
 
-        public async Task<float> GetTotalMealsForMember(int memberId)
+        public async Task<float> GetTotalMealsForMember(int memberId, SessionInfo sessionInDb)
         {
-            var breakfasts = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.BreakFast);
-            var lunchs = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.Lunch);
-            var dinners = await _context.Meals.Where(m => m.MemberId == memberId).SumAsync(m => m.Dinner);
-            return breakfasts+lunchs+dinners;
+            float totalMeals = 0;
+            if(sessionInDb != null)
+            {
+                totalMeals = await _context.Meals.Where(m => m.MemberId == memberId
+                && m.Day >= sessionInDb.SessionStart && m.Day <= sessionInDb.SessionEnd)
+                .SumAsync(m => m.BreakFast) +
+                await _context.Meals.Where(m => m.MemberId == memberId
+                && m.Day >= sessionInDb.SessionStart && m.Day <= sessionInDb.SessionEnd)
+                .SumAsync(m => m.Lunch) +
+                await _context.Meals.Where(m => m.MemberId == memberId
+                && m.Day >= sessionInDb.SessionStart && m.Day <= sessionInDb.SessionEnd)
+                .SumAsync(m => m.Dinner);
+            }
+            else {
+                totalMeals = await _context.Meals.Where(m => m.MemberId == memberId)
+                .SumAsync(m => m.BreakFast) +
+                await _context.Meals.Where(m => m.MemberId == memberId)
+                .SumAsync(m => m.Lunch) +
+                await _context.Meals.Where(m => m.MemberId == memberId)
+                .SumAsync(m => m.Dinner);
+            }
+            return totalMeals;
         }
 
         public async Task<float> GetMealReate(int messId)
         {
-            var totalExpense = await _context.DailyExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.Expense);
-            var meals = await _context.DailyExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.TotalMeal);
-            return totalExpense/(float)meals;
+            SessionInfo sessionInDb = await GetCurrentSession();
+            float totalExpense = 0;
+            float meals = 0;
+            if(sessionInDb != null)
+            {
+                totalExpense = await _context.DailyExpenses.Where(ex => ex.MessId == messId
+                && ex.Day >= sessionInDb.SessionStart && ex.Day <= sessionInDb.SessionEnd)
+                .SumAsync(ex => ex.Expense);
+                meals = (float)await _context.DailyExpenses.Where(ex => ex.MessId == messId
+                && ex.Day >= sessionInDb.SessionStart && ex.Day <= sessionInDb.SessionEnd)
+                .SumAsync(ex => ex.TotalMeal);
+            }
+            else{
+                totalExpense = await _context.DailyExpenses.Where(ex => ex.MessId == messId)
+                .SumAsync(ex => ex.Expense);
+                meals = (float)await _context.DailyExpenses.Where(ex => ex.MessId == messId)
+                .SumAsync(ex => ex.TotalMeal);
+            }
+            if(meals == 0) return 0;
+            return totalExpense/meals;
         }
 
         public async Task<float> FixedExpersePerMember(int messId)
         {
-            var totalExpense = await _context.FixedExpenses.Where(ex => ex.MessId == messId).SumAsync(ex => ex.Amount);
-            var totalMember = await _context.Members.Where(m => m.MessId == messId).CountAsync();
+            SessionInfo sessionInDb = await GetCurrentSession();
+            float totalExpense = 0;
+            int totalMember = await _context.Members.Where(m => m.MessId == messId).CountAsync();
+            if(totalMember == 0) return 0;
+            if(sessionInDb != null)
+            {
+                totalExpense = await _context.FixedExpenses.Where(ex => ex.MessId == messId
+                && ex.EffectiveDate >= sessionInDb.SessionStart && ex.EffectiveDate <= sessionInDb.SessionEnd)
+                .SumAsync(ex => ex.Amount);
+            }
+            else{
+                totalExpense = await _context.FixedExpenses.Where(ex => ex.MessId == messId)
+                .SumAsync(ex => ex.Amount);
+            }
             return totalExpense/totalMember;
         }
 
         public async Task<IEnumerable<Deposit>> GetDepositsByMemberId(int memberId)
         {
-            return await _context.Deposits.Where(dp => dp.MemberId == memberId).OrderByDescending(dp => dp.Id).ToListAsync();
+            SessionInfo sessionInDb = await GetCurrentSession();
+            if(sessionInDb != null)
+            {
+                return await _context.Deposits.Where(dp => dp.MemberId == memberId &&
+                dp.EffectiveDate >= sessionInDb.SessionStart && dp.EffectiveDate <= sessionInDb.SessionEnd)
+                .OrderByDescending(dp => dp.Id).ToListAsync();
+            }
+            else{
+                return await _context.Deposits.Where(dp => dp.MemberId == memberId)
+                .OrderByDescending(dp => dp.Id).ToListAsync();
+            }
+        }
+
+        private async Task<SessionInfo> GetCurrentSession()
+        {
+            var httpContext = _httpContextAccessor.HttpContext;
+            int sessionId = 0;
+            SessionInfo sessionInDb;
+            try
+            {
+                sessionId = int.Parse(httpContext.Request.Query["sessionId"].ToString());
+            }
+            catch (System.Exception)
+            {}
+            sessionInDb = await _context.Sessions.FirstOrDefaultAsync(se => se.Id ==sessionId);
+            return sessionInDb;
         }
     }
 }

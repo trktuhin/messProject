@@ -32,10 +32,10 @@ namespace MessDotCity.API.Data
          Task<IEnumerable<SessionInfo>> GetSessions(int messId);
          Task<SessionInfo> GetSession(int id);
          Task<IEnumerable<MemberDropdownResource>> MembersForDropdown(int messId);
-         Task<float> GetTotalCredit(int memberId);
-         Task<float> GetTotalDebit(int memberId);
+         Task<float> GetTotalCredit(int memberId, SessionInfo sessionInDb);
+         Task<float> GetTotalDebit(int memberId, SessionInfo sessionInDb);
          Task<IEnumerable<Deposit>> GetDepositsByMemberId(int memberId);
-         Task<float> GetTotalMealsForMember(int memberId);
+         Task<float> GetTotalMealsForMember(int memberId, SessionInfo sessionInDb);
          Task<float> GetMealReate(int messId);
          Task<float> FixedExpersePerMember(int messId);
     }

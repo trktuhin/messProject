@@ -11,9 +11,9 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md="4" offset-md="1">
-        <ion-select placeholder="Select One" value="January2020">
-          <ion-select-option value="January2020">January 2020</ion-select-option>
-          <ion-select-option value="February2020">February 2020</ion-select-option>
+        <ion-select name="sessionId" (ionChange)="onSessionChange()" *ngIf="sessions" placeholder="Select One"
+          [(ngModel)]="selectedSessionId">
+          <ion-select-option *ngFor="let session of sessions" [value]="session.id">{{session.title}}</ion-select-option>
         </ion-select>
       </ion-col>
       <ion-col size="6" class="text-right text-tertiary pr-2" *ngIf="selectedMember">

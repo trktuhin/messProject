@@ -4,7 +4,9 @@
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      <ion-label><ion-icon slot="start" name="cash"></ion-icon></ion-label>
+      <ion-label>
+        <ion-icon slot="start" name="cash"></ion-icon>
+      </ion-label>
       Deposits
     </ion-title>
   </ion-toolbar>
@@ -14,9 +16,9 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md="4" offset-md="1">
-        <ion-select placeholder="Select One" value="January2020">
-          <ion-select-option value="January2020">January 2020</ion-select-option>
-          <ion-select-option value="February2020">February 2020</ion-select-option>
+        <ion-select name="sessionId" (ionChange)="onSessionChange()" *ngIf="sessions" placeholder="Select One"
+          [(ngModel)]="selectedSessionId">
+          <ion-select-option *ngFor="let session of sessions" [value]="session.id">{{session.title}}</ion-select-option>
         </ion-select>
       </ion-col>
       <ion-col size="6" class="text-right text-tertiary pr-2">
@@ -39,7 +41,8 @@
         <ion-button *ngIf="authService.isAdmin()" color="success" (click)="openModal('debit', dr.memberId)" title="add">
           <ion-icon slot="icon-only" name="add-circle"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="authService.isAdmin()" color="danger" (click)="openModal('credit', dr.memberId)" title="withdraw">
+        <ion-button *ngIf="authService.isAdmin()" color="danger" (click)="openModal('credit', dr.memberId)"
+          title="withdraw">
           <ion-icon slot="icon-only" name="remove-circle"></ion-icon>
         </ion-button>
         <ion-button color="secondary" [routerLink]="['deposit-history', dr.memberId]" title="history">

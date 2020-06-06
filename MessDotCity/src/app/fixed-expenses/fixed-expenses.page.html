@@ -4,8 +4,10 @@
       <ion-menu-button menu="m1"></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      <ion-label><ion-icon slot="icon-only" name="reader"></ion-icon></ion-label>
-       Fixed Expenses
+      <ion-label>
+        <ion-icon slot="icon-only" name="reader"></ion-icon>
+      </ion-label>
+      Fixed Expenses
     </ion-title>
     <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
       <ion-button routerLink="add-fixed-expense">
@@ -21,9 +23,10 @@
       <ion-grid>
         <ion-row>
           <ion-col size="6" size-md="4" offset-md="1">
-            <ion-select placeholder="Select One" class="full-width-select" value="January2020">
-              <ion-select-option value="January2020">January 2020</ion-select-option>
-              <ion-select-option value="February2020">February 2020</ion-select-option>
+            <ion-select name="sessionId" (ionChange)="onSessionChange()" *ngIf="sessions" placeholder="Select One"
+              [(ngModel)]="selectedSessionId">
+              <ion-select-option *ngFor="let session of sessions" [value]="session.id">{{session.title}}
+              </ion-select-option>
             </ion-select>
           </ion-col>
           <ion-col size="6" class="text-right pr-2">

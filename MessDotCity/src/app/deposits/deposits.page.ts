@@ -5,6 +5,8 @@ import { DepositInfo } from '../_models/depositInfo';
 import { DepositService } from '../_services/deposit.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../_services/auth.service';
+import { SessionInfo } from '../_models/sessionInfo';
+import { ProfileService } from '../_services/profile.service';
 
 @Component({
   selector: 'app-deposits',
@@ -15,20 +17,38 @@ export class DepositsPage implements OnInit {
   depositOverviews: DepositInfo[] = [];
   baseImageUrl = environment.baseImageUrl;
   memberDropdown: any[];
+  sessions: SessionInfo[];
+  selectedSessionId = 0;
   constructor(private modalCtrl: ModalController,
-              private platform: Platform,
               private depositService: DepositService,
               private toasCtrl: ToastController,
               private loadingCtrl: LoadingController,
-              public authService: AuthService) { }
+              public authService: AuthService,
+              private profileService: ProfileService) { }
 
   ngOnInit() {
+  }
+
+  getSessions() {
+    this.profileService.getSessions().subscribe(res => {
+      this.sessions = res;
+      if (res[0]) {
+        this.selectedSessionId = res[0].id;
+      }
+      this.initializeDeposits();
+      this.getMembersForDropdown();
+    });
+  }
+
+  onSessionChange() {
+    this.initializeDeposits();
+    this.getMembersForDropdown();
   }
 
   initializeDeposits() {
     const loader = this.loadingCtrl.create();
     loader.then(el => el.present());
-    this.depositService.getDeposits().subscribe(res => {
+    this.depositService.getDeposits(this.selectedSessionId).subscribe(res => {
       this.depositOverviews = res;
       loader.then(el => el.dismiss());
     }, err => {
@@ -37,11 +57,14 @@ export class DepositsPage implements OnInit {
     });
   }
 
-  ionViewWillEnter() {
-    this.initializeDeposits();
+  getMembersForDropdown() {
     this.depositService.getMemberDropdown().subscribe((res: any) => {
       this.memberDropdown = res;
     }, err => console.log(err));
+  }
+
+  ionViewWillEnter() {
+    this.getSessions();
    }
 
   getTotalBalance() {
