@@ -44,7 +44,11 @@ namespace MessDotCity.API.Controllers
             int messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
             var existingExpense = await _repo.GetDailyExpenseByDate(dto.Day);
             if(existingExpense != null) return BadRequest("Expense already exists for the day!");
             // mapping expense and meal object
@@ -108,7 +112,11 @@ namespace MessDotCity.API.Controllers
             int messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
             // getting existing data
             var dailyExpenseInDb = await _repo.GetDailyExpenseById(dto.DailyExpense.Id);
             dailyExpenseInDb.ResponsibleMember = dto.DailyExpense.ResponsibleMember;
@@ -150,7 +158,11 @@ namespace MessDotCity.API.Controllers
             int messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
 
             var dailyExpenseInDb = await _repo.GetDailyExpenseById(id);
             if(dailyExpenseInDb == null) return NotFound();
@@ -182,7 +194,11 @@ namespace MessDotCity.API.Controllers
             var messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
 
             var expenseToCreate = _mapper.Map<FixedExpense>(dto);
             expenseToCreate.MessId = messId;
@@ -198,7 +214,11 @@ namespace MessDotCity.API.Controllers
             var messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
             int id = 0;
             if(dto.Id != null) id = (int)dto.Id;
             var fexInDb = await _repo.GetFixedExpenseById(id);
@@ -216,7 +236,11 @@ namespace MessDotCity.API.Controllers
             int messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
 
             var fixedExpenseInDb = await _repo.GetFixedExpenseById(id);
             if(fixedExpenseInDb == null) return NotFound();

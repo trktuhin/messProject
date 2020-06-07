@@ -38,7 +38,7 @@
         <ion-item *ngFor="let md of members" detail >
           <ion-grid>
             <ion-row align-items-center>
-              <ion-col size-sm="3" size-md="2" (click)="memberDetails(md.memberId)">
+              <ion-col size-sm="3" size-md="2"(click)="memberDetails(md.id)">
                 <ion-avatar class="mx-auto">
                   <ion-img width="80" height="80"
                     src="{{md.photoName}}">

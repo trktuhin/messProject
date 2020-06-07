@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MembersService } from 'src/app/_services/members.service';
 import { ActivatedRoute } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { SessionInfo } from 'src/app/_models/sessionInfo';
+import { ProfileService } from 'src/app/_services/profile.service';
 
 @Component({
   selector: 'app-view-meals',
@@ -16,11 +18,30 @@ export class ViewMealsPage implements OnInit {
   totalLunch = 0;
   totalDinner = 0;
   totalMeals = 0;
+  sessions: SessionInfo[];
+  selectedSessionId = 0;
 
   constructor(private memberService: MembersService, private route: ActivatedRoute,
-              private loadingCtrl: LoadingController) { }
+              private loadingCtrl: LoadingController,
+              private profileService: ProfileService) { }
 
   ngOnInit() {
+  }
+
+  getSessions() {
+    this.profileService.getSessions().subscribe(res => {
+      this.sessions = res;
+      if (res[0]) {
+        this.selectedSessionId = res[0].id;
+      }
+      this.getSelectedMember();
+      this.getAllMeals();
+    });
+  }
+
+  onSessionChange() {
+    this.getSelectedMember();
+    this.getAllMeals();
   }
 
   calculateTotalMeals() {
@@ -39,11 +60,10 @@ export class ViewMealsPage implements OnInit {
     });
   }
 
-  ionViewWillEnter() {
+  getAllMeals() {
     const loader = this.loadingCtrl.create();
     loader.then(el => el.present());
-    this.getSelectedMember();
-    this.memberService.viewMeals(this.memberId).subscribe((data: any) => {
+    this.memberService.viewMeals(this.memberId, this.selectedSessionId).subscribe((data: any) => {
       this.meals = data;
       this.calculateTotalMeals();
       loader.then(el => el.dismiss());
@@ -51,6 +71,10 @@ export class ViewMealsPage implements OnInit {
       console.log(err);
       loader.then(el => el.dismiss());
     });
+  }
+
+  ionViewWillEnter() {
+    this.getSessions();
   }
 
   getTotalBreakfast() {

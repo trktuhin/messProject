@@ -38,10 +38,10 @@
         <p class="text-muted">৳ {{dr.totalDebit - dr.totalCredit}}</p>
       </ion-col>
       <ion-col size="6" size-md="5">
-        <ion-button *ngIf="authService.isAdmin()" color="success" (click)="openModal('debit', dr.memberId)" title="add">
+        <ion-button *ngIf="authService.isManager()" color="success" (click)="openModal('debit', dr.memberId)" title="add">
           <ion-icon slot="icon-only" name="add-circle"></ion-icon>
         </ion-button>
-        <ion-button *ngIf="authService.isAdmin()" color="danger" (click)="openModal('credit', dr.memberId)"
+        <ion-button *ngIf="authService.isManager()" color="danger" (click)="openModal('credit', dr.memberId)"
           title="withdraw">
           <ion-icon slot="icon-only" name="remove-circle"></ion-icon>
         </ion-button>

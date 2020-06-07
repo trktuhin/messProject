@@ -3,8 +3,8 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>{{authService.isAdmin()? 'Edit': 'Detailed'}} Fixed Expense</ion-title>
-    <ion-buttons *ngIf="authService.isAdmin()" slot="primary">
+    <ion-title>{{authService.isManager()? 'Edit': 'Detailed'}} Fixed Expense</ion-title>
+    <ion-buttons *ngIf="authService.isManager()" slot="primary">
       <ion-button (click)="onSubmit()">
         <ion-icon slot="icon-only" name="checkmark"></ion-icon>
       </ion-button>
@@ -19,24 +19,24 @@
         <ion-list [formGroup]="expenseForm">
           <ion-item>
             <ion-label position="floating" color="medium">Title</ion-label>
-            <ion-input [readonly]="!authService.isAdmin()" type="text" autocomplete="off" formControlName="expenseName"></ion-input>
+            <ion-input [readonly]="!authService.isManager()" type="text" autocomplete="off" formControlName="expenseName"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating" color="medium">Amount</ion-label>
-            <ion-input [readonly]="!authService.isAdmin()" type="number" autocomplete="off" formControlName="expenseAmount"></ion-input>
+            <ion-input [readonly]="!authService.isManager()" type="number" autocomplete="off" formControlName="expenseAmount"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating" color="medium">Date</ion-label>
-            <ion-datetime [readonly]="!authService.isAdmin()" displayFormat="MMM-DD-YYYY" formControlName="expenseDate"></ion-datetime>
+            <ion-datetime [readonly]="!authService.isManager()" displayFormat="MMM-DD-YYYY" formControlName="expenseDate"></ion-datetime>
           </ion-item>
           <ion-item>
             <ion-label position="floating" color="medium">Remarks</ion-label>
-            <ion-input [readonly]="!authService.isAdmin()" type="text" autocomplete="off" formControlName="remarks"></ion-input>
+            <ion-input [readonly]="!authService.isManager()" type="text" autocomplete="off" formControlName="remarks"></ion-input>
           </ion-item>
         </ion-list>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="authService.isAdmin()">
+    <ion-row *ngIf="authService.isManager()">
       <ion-col size-md="2" offset-md="8" size="4" offset="6">
         <ion-button (click)="deleteExpense()" color="danger">Delete Expense</ion-button>
       </ion-col>

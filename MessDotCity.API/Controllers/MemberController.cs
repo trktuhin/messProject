@@ -302,5 +302,57 @@ namespace MessDotCity.API.Controllers
             var meals = await _repo.GetMealsByMemberId(memberId);
             return Ok(meals);
         }
+
+        [HttpGet("makeManager/{memberId}")]
+        public async Task<IActionResult> MakeManager(int memberId)
+        {
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if(memberInDb == null) return NotFound();
+            if(memberInDb.MessRole == "manager") return BadRequest("Already manager");
+            // removing old manager if exists
+            var oldManager = await _repo.GetManager(messId);
+            if(oldManager != null)
+            {
+                oldManager.MessRole = "member";
+            }
+            memberInDb.MessRole = "manager";
+            await _uow.Complete();
+            await BroadCastUpdatedToken(memberInDb.UserId);
+            return Ok();
+        }
+
+        [HttpGet("deleteManagership/{memberId}")]
+        public async Task<IActionResult> DeleteManagership(int memberId)
+        {
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            if(ownedMess.Id != messId) return Unauthorized();
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if(memberInDb == null) return NotFound();
+            if(memberInDb.MessRole == "member") return BadRequest("Not a manager");
+            memberInDb.MessRole = "member";
+            await _uow.Complete();
+            await BroadCastUpdatedToken(memberInDb.UserId);
+            return Ok();
+        }
+
+        [HttpGet("GetMemberRole/{memberId}")]
+        public async Task<IActionResult> GetMemberRole(int memberId)
+        {
+            // checking is admin
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var ownedMess = await _repo.GetMessByOwner(currentUserId);
+            var messId = int.Parse(User.FindFirst("MessId").Value);
+            if(ownedMess.Id != messId) return Unauthorized();
+            var memberInDb = await _repo.GetMemberByMemberId(memberId);
+            if(memberInDb == null) return NotFound();
+            return Ok(memberInDb.MessRole);
+        }
     }
 }

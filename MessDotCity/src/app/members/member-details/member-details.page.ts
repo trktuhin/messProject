@@ -14,6 +14,7 @@ import { EditMemberComponent } from '../edit-member/edit-member.component';
 export class MemberDetailsPage implements OnInit {
   selectedMember: MemberInfo;
   memberId: number;
+  isManager = false;
 
   constructor(private route: ActivatedRoute, private memberService: MembersService,
               private authservice: AuthService,
@@ -40,6 +41,54 @@ export class MemberDetailsPage implements OnInit {
     return this.authservice.isAdmin();
   }
 
+  changeManager() {
+    this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: this.selectedMember.firstName + ' will be new manager',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Okay',
+          handler: () => {
+            this.memberService.makeManager(this.memberId).subscribe(() => {
+              this.showSuccessMessage('New manager made successfully');
+              this.getSelectedMember();
+            }, err => {
+              this.showErrorMessage(err);
+            });
+          }
+        }
+      ]
+    }).then(el => el.present());
+  }
+
+  removeManagerShip() {
+    this.alertCtrl.create({
+      header: 'Are you sure?',
+      message: this.selectedMember.firstName + ' will be no longer a manager',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel'
+        },
+        {
+          text: 'Okay',
+          handler: () => {
+            this.memberService.deleteManagership(this.memberId).subscribe(() => {
+              this.showSuccessMessage('Managership removed succssfully');
+              this.getSelectedMember();
+            }, err => {
+              this.showErrorMessage(err);
+            });
+          }
+        }
+      ]
+    }).then(el => el.present());
+  }
+
   isManualMember() {
     let memberUserId: string;
     if (this.selectedMember) {
@@ -55,6 +104,11 @@ export class MemberDetailsPage implements OnInit {
       this.memberId = +params.get('memberId');
       this.memberService.getMember(this.memberId).subscribe(res => {
         this.selectedMember = res;
+        if (res.messRole === 'manager') {
+          this.isManager = true;
+        } else {
+          this.isManager = false;
+        }
       }, err => console.log(err));
     });
   }
@@ -84,7 +138,21 @@ export class MemberDetailsPage implements OnInit {
     }).then(el => el.present());
   }
 
+  showSuccessMessage(successMessage: string) {
+    this.toastCtrl.create({
+      message: successMessage,
+      duration: 2000,
+      color: 'success'
+    }).then(el => el.present());
+  }
 
+  showErrorMessage(successMessage: string) {
+    this.toastCtrl.create({
+      message: successMessage,
+      duration: 2000,
+      color: 'danger'
+    }).then(el => el.present());
+  }
   onEditMember() {
     this.modalCtrl.create({component: EditMemberComponent,
       componentProps: { selectedMember: this.selectedMember, memberId: this.memberId }}).then(el => {

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { DailyExpensesPage } from './daily-expenses.page';
-import { AdminGuardService } from '../_guards/admin-guard.service';
+import { ManagerGuardService } from '../_guards/manager-guard.service';
 
 const routes: Routes = [
   {
@@ -12,7 +12,7 @@ const routes: Routes = [
   {
     path: 'add-daily-expense',
     loadChildren: () => import('./add-daily-expense/add-daily-expense.module').then( m => m.AddDailyExpensePageModule),
-    canLoad: [AdminGuardService]
+    canLoad: [ManagerGuardService]
   },
   {
     path: 'edit-meals/:id',

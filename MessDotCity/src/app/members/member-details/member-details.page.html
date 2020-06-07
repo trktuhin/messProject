@@ -33,6 +33,8 @@
                  {{selectedMember?.dBreakfast}}+{{selectedMember?.dLunch}}+{{selectedMember?.dDinner}} 
                  <span button class="btn btn-sm btn-warning" *ngIf='ownMembership()' (click)="onEditMember()">Change</span>
                  <span button class="btn btn-sm btn-warning" *ngIf='isManualMember() && isAdmin()' (click)="onEditMember()">Edit Member</span>
+                 <span button class="btn btn-sm btn-warning" *ngIf='!isManualMember() && isAdmin() && !isManager && !ownMembership()' (click)="changeManager()">Make Manager</span>
+                 <span button class="btn btn-sm btn-danger" *ngIf='isAdmin() && isManager' (click)="removeManagerShip()">Reove Managership</span>
                  <span button class="btn btn-sm btn-danger ml-2" *ngIf='ownMembership() && !isAdmin()' (click)="deleteMembership()">Remove Membership</span>
                 </ion-label>
             </ion-item>

@@ -84,7 +84,11 @@ namespace MessDotCity.API.Controllers
             int messId = int.Parse(User.FindFirst("MessId").Value);
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var ownedMess = await _repo.GetMessByOwner(currentUserId);
-            if(ownedMess == null || ownedMess.Id != messId) return Unauthorized();
+            if(ownedMess == null || ownedMess.Id != messId)
+            {
+                var messRole = User.FindFirst("messRole").Value;
+                if(messRole != "manager") return Unauthorized();
+            }
 
             var memberInDb = await _repo.GetMemberByMemberId(dto.MemberId);
             if(memberInDb == null) return NotFound();
@@ -93,7 +97,8 @@ namespace MessDotCity.API.Controllers
             {
                 depoToCreate.Debit = dto.Amount;
             }
-            else{
+            else
+            {
                 depoToCreate.Credit = dto.Amount;
             }
             depoToCreate.MemberId = dto.MemberId;

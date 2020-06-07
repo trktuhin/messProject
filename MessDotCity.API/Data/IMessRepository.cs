@@ -38,5 +38,6 @@ namespace MessDotCity.API.Data
          Task<float> GetTotalMealsForMember(int memberId, SessionInfo sessionInDb);
          Task<float> GetMealReate(int messId);
          Task<float> FixedExpersePerMember(int messId);
+         Task<Member> GetManager(int messId);
     }
 }

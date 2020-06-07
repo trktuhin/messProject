@@ -68,7 +68,19 @@ export class MembersService {
     return this.http.post(this.baseUrl + 'EditMember', model);
   }
 
-  viewMeals(memberId: number) {
-    return this.http.get(this.baseUrl + 'ViewMeals/' + memberId + '?sessionId=1');
+  viewMeals(memberId: number, sessionId?: number) {
+    let selectedSessionId = 0;
+    if (sessionId) {
+      selectedSessionId = sessionId;
+    }
+    return this.http.get(this.baseUrl + 'ViewMeals/' + memberId  + '?sessionId=' + selectedSessionId);
+  }
+
+  makeManager(memberId: number) {
+    return this.http.get(this.baseUrl + 'makeManager/' + memberId);
+  }
+
+  deleteManagership(memberId: number) {
+    return this.http.get(this.baseUrl + 'deleteManagership/' + memberId);
   }
 }

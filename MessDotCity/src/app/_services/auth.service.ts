@@ -73,10 +73,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    localStorage.removeItem('messName');
-    localStorage.removeItem('nameid');
+    localStorage.clear();
     this.tokenConnection.stop();
   }
 
@@ -124,5 +121,17 @@ export class AuthService {
       return true;
     }
     return false;
+  }
+
+  isManager() {
+    const role = this.decodedToken.messRole;
+    if ((role as string).toLowerCase() === 'admin' || (role as string).toLowerCase() === 'manager') {
+      return true;
+    }
+    return false;
+  }
+
+  getMessRole(memberId: number) {
+    return this.http.get(this.baseUrl + 'GetMemberRole/' + memberId);
   }
 }

@@ -9,4 +9,5 @@ export interface MemberInfo {
     photoName?: string;
     profession?: string;
     mobile?: string;
+    messRole?: string;
 }

@@ -44,10 +44,6 @@ export class AppComponent implements OnInit {
     private menuCtrl: MenuController
   ) {
     this.initializeApp();
-    // this.router.events.subscribe((event: RouterEvent) => {
-    //   this.activePath = event.url;
-    //   console.log(this.activePath);
-    // });
   }
 
   initializeApp() {
@@ -57,7 +53,6 @@ export class AppComponent implements OnInit {
     });
   }
   setMessNameAndSideMenu() {
-    // console.log('From SETMESSNAMEANDSJIDEMENU')
     const messName = localStorage.getItem('messName');
     this.authService.changeMessName(messName);
     // subscribing to messname
@@ -67,7 +62,7 @@ export class AppComponent implements OnInit {
       if (this.authService.decodedToken) {
         messRole = this.authService.decodedToken.messRole;
       }
-      // console.log(messRole);
+      // console.log(this.messName);
       if (this.messName) {
         this.memberNav = [{
           title: 'Dashboard',
@@ -104,7 +99,9 @@ export class AppComponent implements OnInit {
           url: '/notices',
           icon: 'chatbubble-ellipses'
         }];
+        this.appPages = [];
       } else {
+        this.memberNav = [];
         this.appPages = [
           {
             title: 'Create Mess',
@@ -117,9 +114,8 @@ export class AppComponent implements OnInit {
             icon: 'skull'
           }
         ];
-        this.memberNav = [];
       }
-      if (this.messName && messRole === 'admin') {
+      if (this.messName !== null && messRole === 'admin') {
         this.appPages = [
           {
             title: 'Update Mess',
@@ -155,7 +151,7 @@ export class AppComponent implements OnInit {
       this.authService.changeProfilePhoto(user.photoUrl);
     }
     this.authService.openTokenConnection();
-    this.setMessNameAndSideMenu();
+    // this.setMessNameAndSideMenu();
     this.authService.currentToken.subscribe(() => {
       this.setMessNameAndSideMenu();
     });

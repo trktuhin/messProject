@@ -316,5 +316,10 @@ namespace MessDotCity.API.Data
             sessionInDb = await _context.Sessions.FirstOrDefaultAsync(se => se.Id ==sessionId);
             return sessionInDb;
         }
+
+        public async Task<Member> GetManager(int messId)
+        {
+            return await _context.Members.FirstOrDefaultAsync(m => m.MessId == messId && m.MessRole == "manager");
+        }
     }
 }
