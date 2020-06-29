@@ -7,6 +7,7 @@ using AutoMapper;
 using MessDotCity.API.Data;
 using MessDotCity.API.Data.Resource;
 using MessDotCity.API.Dtos;
+using MessDotCity.API.Helpers;
 using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -25,8 +26,13 @@ namespace MessDotCity.API.Controllers
         private readonly IHostingEnvironment _env;
         private readonly PhotoSettings _photoSettings;
         private readonly IMessRepository _messRepo;
+        private readonly IAuthRepository _authRepo;
+        private readonly ICommonMethods _cms;
+
         public ProfileController(IMapper mapper, IProfileRepository repo, IUnitOfWork uow,
                                 IMessRepository messRepo,
+                                IAuthRepository authRepo,
+                                ICommonMethods cms,
                                 IHostingEnvironment env, IOptionsSnapshot<PhotoSettings> options)
         {
             _env = env;
@@ -35,6 +41,8 @@ namespace MessDotCity.API.Controllers
             _mapper = mapper;
             _photoSettings = options.Value;
             _messRepo = messRepo;
+            _authRepo = authRepo;
+            _cms =cms;
 
         }
         [HttpGet]
@@ -43,6 +51,26 @@ namespace MessDotCity.API.Controllers
             var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             var profile = await _repo.GetUserProfileData(currentUserId);
             return Ok(_mapper.Map<UserProfileResource>(profile));
+        }
+
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordDto dto)
+        {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
+            var userFromRepo = await _repo.GetUserProfileData(currentUserId);
+            if(userFromRepo != null) {
+                var oldPasswordCheck = await _authRepo.Login(userFromRepo.Mobile, dto.OldPassword);
+                if(oldPasswordCheck != null)
+                {
+                    byte[] passwordHash, passwordSalt;
+                    _cms.CreatePasswordHash(dto.NewPassword, out passwordHash, out passwordSalt);
+                    userFromRepo.PasswordHash = passwordHash;
+                    userFromRepo.PasswordSalt = passwordSalt;
+                    await _uow.Complete();
+                    return Ok();
+                }
+            }
+            return Unauthorized();
         }
 
         [HttpPost("EditProfile")]

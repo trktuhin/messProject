@@ -93,8 +93,9 @@ export class AuthPage implements OnInit {
       });
     }, err => {
       loader.then(ldel => ldel.dismiss());
+      console.log(err);
       this.toastCtrl.create({
-        message: 'Mobile no or password is incorrect',
+        message: err,
         duration: 1000,
         color: 'danger'
       }).then(el => {

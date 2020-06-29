@@ -24,7 +24,7 @@ namespace MessDotCity.API.Data
          Task<IEnumerable<DailyExpense>> GetDailyExpenses(int messId);
          Task<DailyExpense> GetDailyExpenseById(int id);
          Task<IEnumerable<MemberMealResource>> GetMemberMealResources(int messId, DateTime day);
-         Task<DailyExpense> GetDailyExpenseByDate(DateTime day);
+         Task<DailyExpense> GetDailyExpenseByDate(DateTime day, int messId);
          Task<IEnumerable<Meal>> GetMealsByDate(DateTime day, int messId);
          Task<IEnumerable<Meal>> GetMealsByMemberId(int memberId);
          Task<IEnumerable<FixedExpense>> GetFixedExpenses(int messId);

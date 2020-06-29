@@ -3,6 +3,7 @@ using System;
 using MessDotCity.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MessDotCity.API.Migrations
@@ -14,12 +15,15 @@ namespace MessDotCity.API.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113");
+                .HasAnnotation("ProductVersion", "2.1.14-servicing-32113")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("MessDotCity.API.Models.DailyExpense", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("Day");
 
@@ -29,7 +33,7 @@ namespace MessDotCity.API.Migrations
 
                     b.Property<string>("ResponsibleMember");
 
-                    b.Property<int?>("TotalMeal");
+                    b.Property<float>("TotalMeal");
 
                     b.HasKey("Id");
 
@@ -39,7 +43,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.Deposit", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("Credit");
 
@@ -61,7 +66,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.FixedExpense", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("Amount");
 
@@ -102,7 +108,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.Member", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<float>("DBreakfast");
 
@@ -136,7 +143,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.MessInfo", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedOn");
 
@@ -162,7 +170,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.Request", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("MessId");
 
@@ -180,7 +189,8 @@ namespace MessDotCity.API.Migrations
             modelBuilder.Entity("MessDotCity.API.Models.SessionInfo", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("LastModifiedOn");
 

@@ -5,7 +5,8 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:5000/api/',
-  baseImageUrl: 'http://localhost:5000/images/'
+  baseImageUrl: 'http://localhost:5000/images/',
+  baseUrl: 'http://localhost:5000/'
 };
 
 /*
@@ -15,4 +16,6 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
+// http://192.168.0.106:8080
+// http://localhost:5000
 // import 'zone.js/dist/zone-error';  // Included with Angular CLI.

@@ -12,7 +12,6 @@ using MessDotCity.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace MessDotCity.API.Controllers
 {
@@ -25,14 +24,19 @@ namespace MessDotCity.API.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IMessRepository _messRepo;
+        private readonly IProfileRepository _proRepo;
         private readonly ICommonMethods _cms;
-        public AuthController(IAuthRepository repo, IConfiguration configuration, IMapper mapper, IMessRepository messRepo, ICommonMethods cms)
+        public AuthController(IAuthRepository repo, IConfiguration configuration, 
+                            IMapper mapper, IMessRepository messRepo,
+                            IUnitOfWork uow,
+                            ICommonMethods cms, IProfileRepository proRepo)
         {
             _cms = cms;
             _messRepo = messRepo;
             _mapper = mapper;
             _configuration = configuration;
             _repo = repo;
+            _proRepo = proRepo;
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserForRegisterDto dto)
@@ -71,6 +75,5 @@ namespace MessDotCity.API.Controllers
                 messName = messName
             });
         }
-
     }
 }

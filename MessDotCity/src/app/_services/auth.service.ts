@@ -92,7 +92,7 @@ export class AuthService {
       return;
     }
     this.tokenConnection = new HubConnectionBuilder().configureLogging(signalR.LogLevel.Debug)
-    .withUrl('http://localhost:5000/tokenUpdate?username=' + username, {
+    .withUrl(environment.baseUrl + 'tokenUpdate?username=' + username, {
       skipNegotiation: true,
       transport: signalR.HttpTransportType.WebSockets
     })

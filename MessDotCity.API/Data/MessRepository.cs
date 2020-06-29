@@ -121,9 +121,9 @@ namespace MessDotCity.API.Data
             return await _context.DailyExpenses.FirstOrDefaultAsync(ex => ex.Id == id);
         }
 
-        public async Task<DailyExpense> GetDailyExpenseByDate(DateTime day)
+        public async Task<DailyExpense> GetDailyExpenseByDate(DateTime day, int messId)
         {
-            return await _context.DailyExpenses.FirstOrDefaultAsync(ex => ex.Day.Date == day.Date);
+            return await _context.DailyExpenses.FirstOrDefaultAsync(ex => ex.Day.Date == day.Date && ex.MessId == messId);
         }
 
         public async Task<IEnumerable<Meal>> GetMealsByDate(DateTime day, int messId)

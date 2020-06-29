@@ -31,7 +31,7 @@ namespace MessDotCity.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddCors();
             services.AddAutoMapper();
@@ -70,8 +70,10 @@ namespace MessDotCity.API
                         context.Response.StatusCode=(int)HttpStatusCode.InternalServerError;
                         var error= context.Features.Get<IExceptionHandlerFeature>();
                         if(error!=null){
-                            context.Response.AddApplicationError(error.Error.Message);
-                            await context.Response.WriteAsync(error.Error.Message);
+                            // context.Response.AddApplicationError(error.Error.Message);
+                            context.Response.AddApplicationError("Fazlami");
+                            await context.Response.WriteAsync(error.Error.StackTrace);
+                            await context.Response.WriteAsync(error.Error.Source);;
                         }
                     });
                 });

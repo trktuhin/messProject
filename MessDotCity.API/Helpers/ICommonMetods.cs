@@ -6,5 +6,6 @@ namespace MessDotCity.API.Helpers
     {
          Task<string> GetUpdatedToken(string userId);
          Task<string> GetMessName(string userId);
+         void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt);
     }
 }

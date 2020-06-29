@@ -9,6 +9,6 @@ namespace MessDotCity.API.Models
         public int MessId { get; set; }
         public float Expense { get; set; }
         public string ResponsibleMember { get; set; }
-        public int? TotalMeal  { get; set; }
+        public float TotalMeal  { get; set; }
     }
 }

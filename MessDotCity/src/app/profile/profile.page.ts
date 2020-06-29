@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Plugins, Capacitor, CameraSource, CameraResultType, CameraPhoto } from '@capacitor/core';
-import { Platform, ToastController } from '@ionic/angular';
+import { Platform, ToastController, ModalController } from '@ionic/angular';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ProfileService } from '../_services/profile.service';
 import { environment } from 'src/environments/environment';
 import { AuthService } from '../_services/auth.service';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 
 function base64toBlob(base64Data, contentType) {
   contentType = contentType || '';
@@ -40,7 +41,7 @@ export class ProfilePage implements OnInit {
   profileForm: FormGroup;
   constructor(private platform: Platform, private fb: FormBuilder,
               private profleService: ProfileService, private authService: AuthService,
-              private toastCntrl: ToastController) { }
+              private toastCntrl: ToastController, private modalCtrl: ModalController) { }
   ngOnInit() {
     if ((this.platform.is('mobile') && !this.platform.is('hybrid')) || this.platform.is('desktop')) {
       this.usePicker = true;
@@ -144,5 +145,30 @@ export class ProfilePage implements OnInit {
         color: 'success'
       }).then(el => el.present());
     }, err => console.log(err));
+  }
+
+  passwordModal() {
+    this.modalCtrl.create({component: ChangePasswordComponent, backdropDismiss: false}).then(el => {
+      el.present();
+      return el.onDidDismiss();
+    }).then(resultData => {
+      if (resultData.role === 'success') {
+        this.toastCntrl.create({
+          message: resultData.data.message,
+          duration: 2000,
+          color: 'success'
+        }).then(el => {
+          el.present();
+        });
+      } else {
+        this.toastCntrl.create({
+          message: resultData.data.message,
+          duration: 2000,
+          color: 'danger'
+        }).then(el => {
+          el.present();
+        });
+      }
+    });
   }
 }

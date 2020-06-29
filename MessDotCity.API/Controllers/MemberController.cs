@@ -68,8 +68,6 @@ namespace MessDotCity.API.Controllers
             memberToCreate.MessRole = "member";
             _repo.Add(memberToCreate);
             await _uow.Complete();
-            // var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
-            // await _tokenHubContext.Clients.Group(currentUserId).SendAsync("ReceiveToken", memberToCreate);
             return Ok(memberToCreate);
         }
         [HttpDelete("{memberId}")]

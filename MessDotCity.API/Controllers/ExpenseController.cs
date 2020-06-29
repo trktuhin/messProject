@@ -49,7 +49,7 @@ namespace MessDotCity.API.Controllers
                 var messRole = User.FindFirst("messRole").Value;
                 if(messRole != "manager") return Unauthorized();
             }
-            var existingExpense = await _repo.GetDailyExpenseByDate(dto.Day);
+            var existingExpense = await _repo.GetDailyExpenseByDate(dto.Day, messId);
             if(existingExpense != null) return BadRequest("Expense already exists for the day!");
             // mapping expense and meal object
             var dexpense = new DailyExpense();
@@ -77,7 +77,7 @@ namespace MessDotCity.API.Controllers
                 meals.Add(meal);
             }
             // totalmeal needs to be float in sql server
-            dexpense.TotalMeal = (int)totalMeals;
+            dexpense.TotalMeal = totalMeals;
             _repo.Add(dexpense);
             _repo.AddMultiple(meals);
             await _uow.Complete();

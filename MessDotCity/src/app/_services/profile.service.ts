@@ -40,4 +40,7 @@ export class ProfileService {
   deleteSession(id: number) {
     return this.http.delete<SessionInfo>(this.baseUrl + 'DeleteSession/' + id);
   }
+  changePassword(model: any) {
+    return this.http.post(this.baseUrl + 'changePassword', model);
+  }
 }
