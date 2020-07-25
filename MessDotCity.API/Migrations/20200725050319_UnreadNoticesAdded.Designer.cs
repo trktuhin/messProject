@@ -4,14 +4,16 @@ using MessDotCity.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MessDotCity.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200725050319_UnreadNoticesAdded")]
+    partial class UnreadNoticesAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -234,13 +236,9 @@ namespace MessDotCity.API.Migrations
 
                     b.Property<int>("MemberId");
 
-                    b.Property<string>("MemberName");
-
                     b.Property<int>("NoticeId");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NoticeId");
 
                     b.ToTable("UnreadNotices");
                 });
@@ -280,14 +278,6 @@ namespace MessDotCity.API.Migrations
                     b.HasOne("MessDotCity.API.Models.UserInfo", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("MessDotCity.API.Models.UnreadNotice", b =>
-                {
-                    b.HasOne("MessDotCity.API.Models.Notice", "Notice")
-                        .WithMany()
-                        .HasForeignKey("NoticeId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

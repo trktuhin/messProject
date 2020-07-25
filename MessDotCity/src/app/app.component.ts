@@ -25,11 +25,6 @@ export class AppComponent implements OnInit {
       title: 'Sign In / Sign Up',
       url: '/auth',
       icon: 'key'
-    },
-    {
-      title: 'Visit Anonymously',
-      url: '/visit',
-      icon: 'skull'
     }
   ];
   activePath = '';
@@ -93,11 +88,6 @@ export class AppComponent implements OnInit {
           title: 'Deposits',
           url: '/deposits',
           icon: 'cash'
-        },
-        {
-          title: 'Notices',
-          url: '/notices',
-          icon: 'chatbubble-ellipses'
         }];
         this.appPages = [];
       } else {
@@ -107,11 +97,6 @@ export class AppComponent implements OnInit {
             title: 'Create Mess',
             url: '/create-mess',
             icon: 'add-circle'
-          },
-          {
-            title: 'Visit Anonymously',
-            url: '/visit',
-            icon: 'skull'
           }
         ];
       }
@@ -121,11 +106,6 @@ export class AppComponent implements OnInit {
             title: 'Update Mess',
             url: '/update-mess',
             icon: 'grid'
-          },
-          {
-            title: 'Visit Anonymously',
-            url: '/visit',
-            icon: 'skull'
           }
         ];
       }

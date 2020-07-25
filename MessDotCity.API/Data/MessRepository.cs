@@ -170,7 +170,8 @@ namespace MessDotCity.API.Data
 
         public async Task<IEnumerable<SessionInfo>> GetSessions(int messId)
         {
-            return await _context.Sessions.Where(se => se.MessId == messId).ToListAsync();
+            return await _context.Sessions.Where(se => se.MessId == messId).
+            OrderByDescending(se => se.SessionEnd).ToListAsync();
         }
 
         public async Task<SessionInfo> GetSession(int id)
@@ -320,6 +321,32 @@ namespace MessDotCity.API.Data
         public async Task<Member> GetManager(int messId)
         {
             return await _context.Members.FirstOrDefaultAsync(m => m.MessId == messId && m.MessRole == "manager");
+        }
+
+        public async Task<IEnumerable<Notice>> GetAllNotices(int messId)
+        {
+            return await _context.Notices.Where(n => n.MessId == messId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<UnreadNotice>> GetUnreadNotices(int memberId)
+        {
+            return await _context.UnreadNotices.Where(un => un.MemberId == memberId)
+                    .Include(un => un.Notice).ToListAsync();
+        }
+
+        public async Task<Notice> GetNotice(int id)
+        {
+            return await _context.Notices.SingleOrDefaultAsync(n => n.Id == id);
+        }
+
+        public async Task<UnreadNotice> GetUnreadNotice(int noticeId, int memberId)
+        {
+            return await _context.UnreadNotices.FirstOrDefaultAsync(un => un.NoticeId == noticeId && un.MemberId == memberId);
+        }
+
+        public async Task<IEnumerable<UnreadNotice>> GetUnreadDetails(int noticeId)
+        {
+            return await _context.UnreadNotices.Where(un => un.NoticeId == noticeId).ToListAsync();
         }
     }
 }

@@ -29,10 +29,6 @@ const routes: Routes = [
     canLoad: [AuthGuardService]
   },
   {
-    path: 'visit',
-    loadChildren: () => import('./visit/visit.module').then( m => m.VisitPageModule)
-  },
-  {
     path: 'members',
     loadChildren: () => import('./members/members.module').then( m => m.MembersPageModule),
     canLoad: [AuthGuardService, MessGuardService]

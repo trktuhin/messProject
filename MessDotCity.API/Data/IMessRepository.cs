@@ -39,5 +39,10 @@ namespace MessDotCity.API.Data
          Task<float> GetMealReate(int messId);
          Task<float> FixedExpersePerMember(int messId);
          Task<Member> GetManager(int messId);
+         Task<IEnumerable<Notice>> GetAllNotices(int messId);
+         Task<IEnumerable<UnreadNotice>> GetUnreadNotices(int memberId);
+         Task<Notice> GetNotice(int id);
+         Task<UnreadNotice> GetUnreadNotice(int noticeId, int memberId);
+         Task<IEnumerable<UnreadNotice>> GetUnreadDetails(int noticeId);
     }
 }

@@ -16,6 +16,8 @@ namespace MessDotCity.API.Data
         public DbSet<FixedExpense> FixedExpenses { get; set; }
         public DbSet<SessionInfo> Sessions { get; set; }
         public DbSet<Deposit> Deposits { get; set; }
+        public DbSet<Notice> Notices { get; set; }
+        public DbSet<UnreadNotice> UnreadNotices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
