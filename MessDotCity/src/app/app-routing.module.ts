@@ -49,11 +49,6 @@ const routes: Routes = [
     canLoad: [AuthGuardService, MessGuardService]
   },
   {
-    path: 'notices',
-    loadChildren: () => import('./notices/notices.module').then( m => m.NoticesPageModule),
-    canLoad: [AuthGuardService, MessGuardService]
-  },
-  {
     path: 'daily-expenses',
     loadChildren: () => import('./daily-expenses/daily-expenses.module').then( m => m.DailyExpensesPageModule),
     canLoad: [AuthGuardService, MessGuardService]
@@ -62,6 +57,10 @@ const routes: Routes = [
     path: 'fixed-expenses',
     loadChildren: () => import('./fixed-expenses/fixed-expenses.module').then( m => m.FixedExpensesPageModule),
     canLoad: [AuthGuardService, MessGuardService]
+  },
+  {
+    path: 'assigned-dates',
+    loadChildren: () => import('./assigned-dates/assigned-dates.module').then( m => m.AssignedDatesPageModule)
   }
 ];
 

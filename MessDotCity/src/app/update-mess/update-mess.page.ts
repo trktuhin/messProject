@@ -91,7 +91,7 @@ export class UpdateMessPage implements OnInit {
                 duration: 2000,
                 color: 'success'
             }).then(el => el.present());
-              localStorage.setItem('messName', '');
+              localStorage.removeItem('messName');
               this.authService.changeMessName('');
               this.router.navigate(['create-mess']);
             }, err => console.log(err));

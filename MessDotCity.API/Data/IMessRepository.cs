@@ -40,8 +40,10 @@ namespace MessDotCity.API.Data
          Task<float> FixedExpersePerMember(int messId);
          Task<Member> GetManager(int messId);
          Task<IEnumerable<Notice>> GetAllNotices(int messId);
+         Task<IEnumerable<AssignedDate>> GetAllAssignedDates(int messId);
          Task<IEnumerable<UnreadNotice>> GetUnreadNotices(int memberId);
          Task<Notice> GetNotice(int id);
+         Task<AssignedDate> GetAssignedDate(int messId, DateTime dateAssigned);
          Task<UnreadNotice> GetUnreadNotice(int noticeId, int memberId);
          Task<IEnumerable<UnreadNotice>> GetUnreadDetails(int noticeId);
     }

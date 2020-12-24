@@ -26,16 +26,6 @@
               <ion-label>{{ mn.title }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
-          <ion-menu-toggle auto-hide="false" *ngIf="messName">
-            <ion-item class="notice-item" lines="none" routerDirection="root" routerLinkActive="selected" routerLink="/notices">
-              <ion-icon class="notice-icon" slot="start" color="dark" [ios]="'chatbubble-ellipses' + '-outline'" [md]="'chatbubble-ellipses' + '-sharp'">
-              </ion-icon>
-              <span class="notice-tag"></span>
-              <ion-label>Notices
-              </ion-label>
-            </ion-item>
-          </ion-menu-toggle>
-
           <ion-item-divider>
           </ion-item-divider>
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">

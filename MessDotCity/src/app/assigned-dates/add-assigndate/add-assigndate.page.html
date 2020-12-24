@@ -1,0 +1,97 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Assign Member</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button (click)="submitDates()">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid class="w-80prcnt">
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-list-header>
+            <ion-label>
+              Assign To
+            </ion-label>
+          </ion-list-header>
+          <ion-item>
+            <ion-select placeholder="Select Member" class="full-width-select" name="responsibleP"
+              [(ngModel)]="responsiblePerson">
+              <ion-select-option *ngFor="let opt of members" [value]="opt.firstName+' '+opt.lastName">{{opt.firstName}}
+                {{opt.lastName}}</ion-select-option>
+            </ion-select>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-radio-group [(ngModel)]="selectedDateType">
+            <ion-list-header>
+              <ion-label>
+                Date Type
+              </ion-label>
+            </ion-list-header>
+            <ion-item>
+              <ion-label>Range Date</ion-label>
+              <ion-radio value="range"></ion-radio>
+            </ion-item>
+            <ion-item>
+              <ion-label>Custom Date(s)</ion-label>
+              <ion-radio value="custom"></ion-radio>
+            </ion-item>
+          </ion-radio-group>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="selectedDateType=='range'">
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date From</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" name="expenseDate" [(ngModel)]="assignDateFrom"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date To</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" [(ngModel)]="assignDateTo"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="selectedDateType!=='range'">
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date 1</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" [(ngModel)]="customDates[0]"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date 2</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" [(ngModel)]="customDates[1]"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date 3</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" [(ngModel)]="customDates[2]"></ion-datetime>
+        </ion-item>
+      </ion-col>
+      <ion-col size="6">
+        <ion-item>
+          <ion-label position="floating" color="medium">Date 4</ion-label>
+          <ion-datetime displayFormat="MMM-DD-YYYY" [(ngModel)]="customDates[3]"></ion-datetime>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

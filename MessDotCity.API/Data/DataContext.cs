@@ -18,12 +18,17 @@ namespace MessDotCity.API.Data
         public DbSet<Deposit> Deposits { get; set; }
         public DbSet<Notice> Notices { get; set; }
         public DbSet<UnreadNotice> UnreadNotices { get; set; }
+        public DbSet<AssignedDate> AssignedDates { get; set; }
+        public DbSet<SentOtp> SentOtps { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
             builder.Entity<Meal>(meal => {
                 meal.HasKey(ml => new {ml.MemberId, ml.Day});
+            });
+            builder.Entity<AssignedDate>(adate => {
+                adate.HasKey(ad => new {ad.DateAssigned, ad.MessId});
             });
         }
     }

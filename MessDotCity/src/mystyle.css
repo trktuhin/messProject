@@ -1,7 +1,11 @@
 
-
 .w-300px {
     width: 18rem !important;
+}
+
+.w-80prcnt {
+    width: 80% !important;
+    margin: 0 auto;
 }
 
 .h-80p {

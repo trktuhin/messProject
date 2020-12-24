@@ -328,6 +328,22 @@ namespace MessDotCity.API.Data
             return await _context.Notices.Where(n => n.MessId == messId).ToListAsync();
         }
 
+        public async Task<IEnumerable<AssignedDate>> GetAllAssignedDates(int messId)
+        {
+            SessionInfo sessionInDb = await GetCurrentSession();
+            if(sessionInDb != null)
+            {
+                return await _context.AssignedDates.Where(fex => fex.MessId == messId && 
+                fex.DateAssigned >= sessionInDb.SessionStart && fex.DateAssigned <= sessionInDb.SessionEnd)
+                .OrderBy(fex => fex.DateAssigned).ToListAsync();
+            }
+            else
+            {
+                return await _context.AssignedDates.Where(fex => fex.MessId == messId).OrderBy(fex => fex.DateAssigned)
+                .ToListAsync();
+            }
+        }
+
         public async Task<IEnumerable<UnreadNotice>> GetUnreadNotices(int memberId)
         {
             return await _context.UnreadNotices.Where(un => un.MemberId == memberId)
@@ -337,6 +353,11 @@ namespace MessDotCity.API.Data
         public async Task<Notice> GetNotice(int id)
         {
             return await _context.Notices.SingleOrDefaultAsync(n => n.Id == id);
+        }
+
+        public async Task<AssignedDate> GetAssignedDate(int messId, DateTime dateAssigned)
+        {
+            return await _context.AssignedDates.SingleOrDefaultAsync(n => n.MessId == messId && n.DateAssigned == dateAssigned);
         }
 
         public async Task<UnreadNotice> GetUnreadNotice(int noticeId, int memberId)

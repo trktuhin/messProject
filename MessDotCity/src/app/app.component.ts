@@ -88,6 +88,11 @@ export class AppComponent implements OnInit {
           title: 'Deposits',
           url: '/deposits',
           icon: 'cash'
+        },
+        {
+          title: 'Assigned Dates',
+          url: '/assigned-dates',
+          icon: 'today'
         }];
         this.appPages = [];
       } else {
@@ -101,6 +106,7 @@ export class AppComponent implements OnInit {
         ];
       }
       if (this.messName !== null && messRole === 'admin') {
+        console.log(this.messName);
         this.appPages = [
           {
             title: 'Update Mess',

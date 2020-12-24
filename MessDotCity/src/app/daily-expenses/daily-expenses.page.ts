@@ -65,7 +65,10 @@ export class DailyExpensesPage implements OnInit {
       totalExpense += element.expense;
       totalMeal += element.totalMeal;
     });
-    return totalExpense / totalMeal;
+    if(totalMeal!= 0) {
+      return totalExpense / totalMeal;
+    }
+    return 0;
   }
 
 
